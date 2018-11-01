@@ -26,7 +26,7 @@ CREATE TABLE `classes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,13 +39,14 @@ DROP TABLE IF EXISTS `enrollments`;
 CREATE TABLE `enrollments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `class_id` int(11) NOT NULL,
-  `student_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `role` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `class_id` (`class_id`),
-  KEY `student_id` (`student_id`),
+  KEY `user_id` (`user_id`),
   CONSTRAINT `enrollments_ibfk_1` FOREIGN KEY (`class_id`) REFERENCES `classes` (`id`),
-  CONSTRAINT `enrollments_ibfk_2` FOREIGN KEY (`student_id`) REFERENCES `studentProfiles` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+  CONSTRAINT `enrollments_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -58,33 +59,36 @@ DROP TABLE IF EXISTS `grades`;
 CREATE TABLE `grades` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `student_id` int(11) NOT NULL,
+  `teacher_id` int(11) NOT NULL,
   `subject_id` int(11) NOT NULL,
-  `grade` int(11) NOT NULL,
+  `grade` varchar(3) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `student_id` (`student_id`),
+  KEY `teacher_id` (`teacher_id`),
   KEY `subject_id` (`subject_id`),
-  CONSTRAINT `grades_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `studentProfiles` (`id`),
-  CONSTRAINT `grades_ibfk_2` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+  CONSTRAINT `grades_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `grades_ibfk_2` FOREIGN KEY (`teacher_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `grades_ibfk_3` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `studentProfiles`
+-- Table structure for table `profiles`
 --
 
-DROP TABLE IF EXISTS `studentProfiles`;
+DROP TABLE IF EXISTS `profiles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `studentProfiles` (
+CREATE TABLE `profiles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
-  `firstName` varchar(255) NOT NULL,
-  `lastName` varchar(255) NOT NULL,
-  `gradeLevel` int(11) NOT NULL,
+  `first_name` varchar(255) NOT NULL,
+  `last_name` varchar(255) NOT NULL,
+  `grade_level` varchar(3) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `studentProfiles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+  CONSTRAINT `profiles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -99,7 +103,7 @@ CREATE TABLE `subjects` (
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -113,9 +117,10 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `login` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
+  `roles` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `login` (`login`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -127,4 +132,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-11-01  2:38:56
+-- Dump completed on 2018-11-01 22:00:50
