@@ -1,35 +1,27 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: developer
+ * UserModel: developer
  * Date: 1.11.18
  * Time: 17.53
  */
 namespace Model;
 
-use DB\Connection;
+use Core\DB\Connection;
 
-class User implements Model
+class UserModel implements Model
 {
-    /**
-     * @var Connection
-     */
+
     private $connection;
 
-    /**
-     * User constructor.
-     * @param Connection $connection
-     */
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
     }
 
     public function getList(): array {
-        $sql = '';
-        $options = [];
-        $users = $this->connection->fetchAll($sql, $options);
-
+        $sql = 'select * from users';
+        $users = $this->connection->fetchAll($sql);
         return $users;
     }
 }
