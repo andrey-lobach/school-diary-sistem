@@ -24,4 +24,10 @@ class UserModel implements Model
         $users = $this->connection->fetchAll($sql);
         return $users;
     }
+
+    public function create(array $user) {
+        $user['roles'] = json_encode($user['roles']);
+        $sql = 'insert into users (login, password, roles) values (:login, :password, :roles)';
+        $this->connection->query($sql, $user);
+    }
 }

@@ -41,4 +41,12 @@ class Route
     {
         return $this->path === $path;
     }
+
+    public function getPathValues (): array
+    {
+        //TODO implement
+        //preg_match_all
+        //#^/users/(\d+)/edit$#i
+        return [];
+    }
 }

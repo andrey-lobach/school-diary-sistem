@@ -13,10 +13,13 @@ class RequestFactory
     public static function createRequest(): Request
     {
         $request = new Request(
-            self::getPath(), self::getRequest()
+            self::getPath(),
+            self::getMethod(),
+            self::getRequest()
         );
         return $request;
     }
+
 
     private static function getPath() :string
     {
@@ -27,4 +30,10 @@ class RequestFactory
     {
         return $_REQUEST;
     }
+
+    private static function getMethod(): string
+    {
+        return $_SERVER['REQUEST_METHOD'];
+    }
+
 }

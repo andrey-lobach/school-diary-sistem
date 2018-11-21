@@ -6,13 +6,23 @@ class Connection
 {
     private $pdo;
 
-    public function __construct(\PDO $pdo_)
+    public function __construct(array $database)
     {
-        $this->pdo = $pdo_;
+        $pdo = new \PDO(sprintf($database['dsn']), sprintf($database['user']), sprintf($database['password']));
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $this->pdo = $pdo;
     }
 
-    public function fetchAll(string $sql) : array
+    public function fetchAll(string $sql, array $params = null) : array
     {
-        return $this->pdo->query($sql)->fetchAll();
+        $statement = $this->pdo->prepare($sql);
+        $statement->execute($params);
+        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function query(string $sql, array $params = null)
+    {
+        $statement = $this->pdo->prepare($sql);
+        $statement->execute($params);
     }
 }

@@ -1,6 +1,5 @@
 <?php
 
-use Core\DB\Connection;
 use Core\Request\Request;
 use Core\Response\Response;
 use Core\Router\Route;
@@ -10,22 +9,10 @@ class Kernel
 {
     private $config;
     private $connection;
-
     public function __construct()
     {
         $this->config = require __DIR__ . '/config/config.php';
-        $this->createConnection();
-    }
-
-    private function createConnection()
-    {
-        try {
-            $pdo = new PDO(sprintf($this->config['dsn']), sprintf($this->config['user']), sprintf($this->config['password']));
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->connection = new Connection($pdo);
-        } catch (PDOException $e) {
-            exit($e->getMessage());
-        }
+        $this->container = \Core\ServiceContainer::getInstance($this->config);
     }
 
     public function getConnection()
@@ -47,13 +34,13 @@ class Kernel
     {
         $route = $this->getRoute($request);
         $controller = $this->getController($route);
-        return call_user_func([$controller, $route->getMethod()], $request);
+        $params = $route->getPathValues();
+        array_unshift($params, $request);
+        return call_user_func_array([$controller, $route->getMethod()], $params);
     }
 
     private function getController(Route $route)
     {
-        $class = $route->getControllerClass();
-        $model = new \Model\UserModel($this->connection);
-        return new $class($model);
+        return $this->container->get($route->getControllerClass());
     }
 }

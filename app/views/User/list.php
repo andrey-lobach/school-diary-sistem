@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head></head>
 <body>
@@ -9,21 +10,13 @@
         <th>Password</th>
         <th>Roles</th>
     </tr>
-    <?php
-    echo '<h1>Users: '.count($users).'</h1>';
-    foreach ($users as $user){
-        echo '<tr>';
-        echo '<td>'.$user['id'].'</td>';
-        echo '<td>'.$user['login'].'</td>';
-        echo '<td>'.$user['password'].'</td>';
-       /* foreach (json_decode($user['roles']) as $role)
-        {
-            echo '<td>'.$role.'</td>';
-        }
-       */
-       echo '<td>'.$user['roles'].'</td>';
-       echo '</tr>';
-    }
-    ?>
+    <h1>Users:<?php echo count($users)?></h1>
+    <?php foreach ($users as $user){ ?>
+        <tr>
+            <td><?php echo $user['id'] ?></td>
+            <td><?php echo $user['login']?></td>
+            <td><?php echo $user['password']?></td>
+            <td><?php echo implode(', ',json_decode($user['roles']));}?></td>
+        </tr>
 </body>
 </html>
