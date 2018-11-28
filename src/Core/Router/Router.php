@@ -11,6 +11,9 @@ use Core\Request\Request;
 
 class Router
 {
+    /**
+     * @var Route[]
+     */
     private static $routes = [];
 
     public static function findRoute(Request $request)

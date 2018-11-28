@@ -1,0 +1,20 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * UserModel: andrei
+ * Date: 14.11.18
+ * Time: 17.58
+ */
+
+namespace Core\Response;
+
+
+class RedirectResponse extends Response
+{
+
+    public function __construct($url, int $code = self::REDIRECT_FOUND)
+    {
+        $this->resource = new EmptyResource();
+        $this->headers= ['Location' => $url];
+    }
+}

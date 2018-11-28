@@ -19,15 +19,23 @@ class UserModel implements Model
         $this->connection = $connection;
     }
 
-    public function getList(): array {
+    public function getList(): array
+    {
         $sql = 'select * from users';
         $users = $this->connection->fetchAll($sql);
         return $users;
     }
 
-    public function create(array $user) {
+    public function create(array $user)
+    {
         $user['roles'] = json_encode($user['roles']);
         $sql = 'insert into users (login, password, roles) values (:login, :password, :roles)';
         $this->connection->query($sql, $user);
+    }
+
+    public function delete (int $id)
+    {
+        $sql = sprintf('delete from users where id=%s', $id);
+        $this->connection->query($sql);
     }
 }

@@ -11,15 +11,51 @@ namespace Core\Response;
 
 class Response
 {
-    private $content;
+    const NOT_FOUND = 404;
+    const REDIRECT_FOUND = 302;
+    const SUCCESS = 200;
+    /**
+     * @var ResourceInterface
+     */
+    protected $resource;
+    /**
+     * @var array
+     */
+    protected $headers;
 
-    public function __construct($content)
+    /**
+     * Response constructor.
+     * @param ResourceInterface $resource
+     * @param int $code
+     * @param array $headers
+     */
+    public function __construct(ResourceInterface $resource, int $code = self::SUCCESS, array $headers = [])
     {
-        $this->content = $content;
+        $this->resource = $resource;
+        array_unshift($headers, sprintf('HTTP/1.0 %d %s', $code, $this->getMessage($code)));
+        $this->headers = $headers;
     }
 
     public function send()
     {
-        echo $this->content;
+        foreach ($this->headers as $key => $value) {
+            if (is_numeric($key)) {
+                $header = $value;
+            } else {
+                $header = sprintf('%s: %s', $key, $value);
+            }
+            header($header);
+        }
+        echo $this->resource->getContent();
     }
+
+    private function getMessage(int $code)
+    {
+        $messages = [
+            self::NOT_FOUND => 'NOT FOUND',
+        ];
+        //TODO fill messages
+        return $messages[$code] ?? '';
+    }
+
 }

@@ -8,8 +8,12 @@
 
 namespace Controller;
 
+use Core\Response\EmptyResource;
+use Core\Response\RedirectResponse;
 use Core\Response\Response;
 use Core\Request\Request;
+use Core\Response\TemplateResource;
+use Form\UserForm;
 use Model\UserModel;
 
 class UserController
@@ -21,28 +25,40 @@ class UserController
         $this->userModel = $user;
     }
 
-    public function list() {
+    public function list()
+    {
         $users = $this->userModel->getList();
-        ob_start();
-        require __DIR__.'/../../app/views/User/list.php';
-        $content = ob_get_contents();
-        ob_end_clean();
-        return new Response($content);
+        $path =__DIR__.'/../../app/views/User/list.php';
+        return new Response(new TemplateResource($path, ['users' => $users]));
     }
 
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
+        $user = [];
+        $form = new UserForm($user, $this->userModel); // TODO use usermodel for check login unique
         if ($request->getMethod() === Request::POST){
-            $user = [
-                'login' => $request->get('login'),
-                'password' => $request->get('password'),
-                'roles' => (array)$request->get('roles', [])
-            ];
-            $this->userModel->create($user);
+            $form->handleRequest($request);
+//            $user = [
+//                'login' => $request->get('login'),
+//                'password' => $request->get('password'),
+//                'roles' => (array)$request->get('roles', [])
+//            ];
+            if ($form->isValid()) {
+                $this->userModel->create($form->getData());
+                //TODO redirect
+            }
+
+
         }
-        ob_start();
-        require __DIR__.'/../../app/views/User/create.php';
-        $content = ob_get_contents();
-        ob_end_clean();
-        return new Response($content);
+        //TODO refactor
+
+        $path =__DIR__.'/../../app/views/User/create.php';
+        return new Response(new TemplateResource($path, ['form' => $form]));
+    }
+
+    public function delete(Request $request, int $id)
+    {
+        $this->userModel->delete($id);
+        return new RedirectResponse('/app.php/users');
     }
 }

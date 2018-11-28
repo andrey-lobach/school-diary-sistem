@@ -25,7 +25,7 @@ class Kernel
         require_once __DIR__.'/config/routes.php';
         $route = Router::findRoute($request);
         if ($route === null) {
-            echo 'error';
+            throw new Exception('route not found');
         }
         return $route;
     }
@@ -33,8 +33,11 @@ class Kernel
     public function createResponse(Request $request):Response
     {
         $route = $this->getRoute($request);
+//        echo $route->getControllerClass();
+//        echo $route->getMethod();
         $controller = $this->getController($route);
-        $params = $route->getPathValues();
+        $params = $route->getPathValues($request->getPath());
+//        echo json_encode($params);
         array_unshift($params, $request);
         return call_user_func_array([$controller, $route->getMethod()], $params);
     }
