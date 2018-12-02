@@ -34,23 +34,14 @@ class UserController
 
     public function create(Request $request)
     {
-        $user = [];
-        $form = new UserForm($user, $this->userModel); // TODO use usermodel for check login unique
+        $form = new UserForm($request, $this->userModel);
         if ($request->getMethod() === Request::POST){
-            $form->handleRequest($request);
-//            $user = [
-//                'login' => $request->get('login'),
-//                'password' => $request->get('password'),
-//                'roles' => (array)$request->get('roles', [])
-//            ];
             if ($form->isValid()) {
                 $this->userModel->create($form->getData());
-                //TODO redirect
+                return new RedirectResponse('/app.php/users');
+
             }
-
-
         }
-        //TODO refactor
 
         $path =__DIR__.'/../../app/views/User/create.php';
         return new Response(new TemplateResource($path, ['form' => $form]));

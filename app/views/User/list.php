@@ -2,7 +2,7 @@
 <html>
 <head></head>
 <body>
-
+<a href="/app.php/users/create">Create User</a>
 <table width="100%" cellspacing="0" style="text-align: center">
     <tr>
         <th>Id</th>
@@ -24,5 +24,6 @@
             </td>
         </tr>
     <?php } ?>
+
 </body>
 </html>

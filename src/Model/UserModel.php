@@ -38,4 +38,15 @@ class UserModel implements Model
         $sql = sprintf('delete from users where id=%s', $id);
         $this->connection->query($sql);
     }
+
+    public function getLogins(): array
+    {
+        $sql = 'select login from users';
+        $logins = $this->connection->fetchAll($sql);
+        $logins_= [];
+        foreach ($logins as $login){
+            array_push($logins_, $login['login']);
+        }
+        return $logins_;
+    }
 }
