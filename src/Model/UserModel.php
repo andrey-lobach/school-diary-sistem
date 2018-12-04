@@ -33,20 +33,31 @@ class UserModel implements Model
         $this->connection->query($sql, $user);
     }
 
+    public function edit (array $user, int $id)
+    {
+        $user['roles'] = json_encode($user['roles']);
+        $sql = sprintf("update users set login='%s', password='%s', roles='%s' where id=%s", $user['login'], $user['password'], $user['roles'], $id);
+        $this->connection->query($sql, $user);
+    }
+
     public function delete (int $id)
     {
         $sql = sprintf('delete from users where id=%s', $id);
         $this->connection->query($sql);
     }
 
-    public function getLogins(): array
+    public function checkLogin (string $login)
     {
-        $sql = 'select login from users';
-        $logins = $this->connection->fetchAll($sql);
-        $logins_= [];
-        foreach ($logins as $login){
-            array_push($logins_, $login['login']);
-        }
-        return $logins_;
+        $sql = sprintf("select login from users where login='%s'", $login);
+        $login_ = $this->connection->fetchAll($sql);
+        if (count($login_) === 0) return false;
+        return true;
+    }
+
+    public function getUser(int $id)
+    {
+        $sql = sprintf('select * from users where id = %s', $id);
+        $user = $this->connection->fetchAll($sql);
+        return $user[0];
     }
 }

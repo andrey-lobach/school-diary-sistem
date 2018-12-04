@@ -6,29 +6,29 @@ use Core\Request\Request;
 use Model\UserModel;
 
 
-class UserForm {
-
+class UserForm
+{
 
     private $data;
     private $violations = [];
     private $userModel;
 
-    public function __construct(Request $request, UserModel $userModel)
+    public function __construct(UserModel $userModel, array $data = [])
+    {
+        $this->userModel = $userModel;
+        $this->data['login'] = $data['login'];
+        $this->data['password'] = $data['password'];
+        $this->data['roles'] = $data['roles'];
+    }
+
+    public function handleRequest(Request $request)
     {
         $this->data = [
             'login' => $request->get('login'),
             'password' => $request->get('password'),
             'roles' => (array)$request->get('roles', []) // что-то не так
         ];
-        print_r($this->data['roles']);
-        $this->userModel = $userModel;
-        $this->handleRequest();
-    }
-
-    public function handleRequest()
-    {
-        $logins = $this->userModel->getLogins();
-        if (in_array($this->data['login'], $logins)) {
+        if ($this->userModel->checkLogin($this->data['login'])) {
             $this->violations['login_error: '] = 'such login exists';
         }
         if (strlen($this->data['password']) < 5) {
@@ -54,6 +54,8 @@ class UserForm {
     {
         return $this->violations;
     }
+
+
 
     public function isValid()
     {
