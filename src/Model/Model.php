@@ -11,5 +11,9 @@ namespace Model;
 
 interface Model
 {
+   /* public function create();
+    public function delete();
+    public function edit();*/
     public function getList(): array;
+
 }

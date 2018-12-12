@@ -15,6 +15,8 @@ class Request
 
     const GET = 'GET';
 
+    private $attributes;
+
     private $path;
 
     private $method;
@@ -28,6 +30,13 @@ class Request
         $this->method=$method;
     }
 
+    /**
+     * @param mixed $attributes
+     */
+    public function setAttributes($attributes)
+    {
+        $this->attributes = $attributes;
+    }
     public function getRequest()
     {
         return $this->request;
@@ -48,6 +57,9 @@ class Request
 
     public function get(string $key, $default = null)
     {
+        if (array_key_exists($key, $this->attributes)){
+            return $this->attributes[$key];
+        }
         return $this->request[$key] ?? $default;
     }
 

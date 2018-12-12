@@ -13,11 +13,18 @@ class Connection
         $this->pdo = $pdo;
     }
 
-    public function fetchAll(string $sql, array $params = null) : array
+    public function fetch(string $sql, array $params = null, $fetchStyle=\PDO::FETCH_ASSOC)
     {
         $statement = $this->pdo->prepare($sql);
         $statement->execute($params);
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $statement->fetch($fetchStyle);
+    }
+
+    public function fetchAll(string $sql, array $params = null, $fetchStyle=\PDO::FETCH_ASSOC) : array
+    {
+        $statement = $this->pdo->prepare($sql);
+        $statement->execute($params);
+        return $statement->fetchAll($fetchStyle);
     }
 
     public function query(string $sql, array $params = null)

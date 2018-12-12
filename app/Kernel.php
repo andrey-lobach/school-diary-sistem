@@ -33,13 +33,10 @@ class Kernel
     public function createResponse(Request $request):Response
     {
         $route = $this->getRoute($request);
-//        echo $route->getControllerClass();
-//        echo $route->getMethod();
         $controller = $this->getController($route);
         $params = $route->getPathValues($request->getPath());
-//        echo json_encode($params);
-        array_unshift($params, $request);
-        return call_user_func_array([$controller, $route->getMethod()], $params);
+        $request->setAttributes($params);
+        return call_user_func([$controller, $route->getMethod()], $request);
     }
 
     private function getController(Route $route)

@@ -12,7 +12,7 @@ namespace Core\Response;
 class RedirectResponse extends Response
 {
 
-    public function __construct($url, int $code = self::REDIRECT_FOUND)
+    public function __construct($url, int $code = self::MOVED_TEMPORARILY)
     {
         $this->resource = new EmptyResource();
         $this->headers= ['Location' => $url];

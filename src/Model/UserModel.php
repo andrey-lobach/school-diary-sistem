@@ -5,6 +5,7 @@
  * Date: 1.11.18
  * Time: 17.53
  */
+
 namespace Model;
 
 use Core\DB\Connection;
@@ -23,6 +24,10 @@ class UserModel implements Model
     {
         $sql = 'select * from users';
         $users = $this->connection->fetchAll($sql);
+        $users = array_map(function (array $user) {
+            $user['roles'] = json_decode($user['roles']);
+            return $user;
+        }, $users);
         return $users;
     }
 
@@ -33,31 +38,40 @@ class UserModel implements Model
         $this->connection->query($sql, $user);
     }
 
-    public function edit (array $user, int $id)
+    public function edit(array $user, int $id)
     {
         $user['roles'] = json_encode($user['roles']);
-        $sql = sprintf("update users set login='%s', password='%s', roles='%s' where id=%s", $user['login'], $user['password'], $user['roles'], $id);
+        $user['id'] = $id;
+        $sql = 'update users set login=:login, password=:password, roles=:roles where id=:id';
         $this->connection->query($sql, $user);
     }
 
-    public function delete (int $id)
+    public function delete(int $id)
     {
-        $sql = sprintf('delete from users where id=%s', $id);
-        $this->connection->query($sql);
+        $sql ='delete from users where id=:id';
+        $this->connection->query($sql, ['id' => $id]);
     }
 
-    public function checkLogin (string $login)
+    public function checkLogin(string $login, int $id = null): bool
     {
-        $sql = sprintf("select login from users where login='%s'", $login);
-        $login_ = $this->connection->fetchAll($sql);
-        if (count($login_) === 0) return false;
-        return true;
+        $params = ['login' => $login];
+        if (null === $id) {
+            $sql = 'select id from users where login=:login';
+        } else {
+            $sql = 'select id from users where login=:login and id != :id';
+            $params['id'] = $id;
+        }
+
+        return (bool)$this->connection->fetch($sql, $params, \PDO::FETCH_COLUMN);
     }
 
     public function getUser(int $id)
     {
-        $sql = sprintf('select * from users where id = %s', $id);
-        $user = $this->connection->fetchAll($sql);
-        return $user[0];
+        $sql = 'select * from users where id = :id';
+        $user = $this->connection->fetch($sql, ['id' => $id]);
+        if ($user) {
+            $user['roles'] = json_decode($user['roles']);
+        }
+        return $user ?: null;
     }
 }

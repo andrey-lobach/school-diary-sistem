@@ -28,42 +28,49 @@ class UserController
     public function list()
     {
         $users = $this->userModel->getList();
-        $path =__DIR__.'/../../app/views/User/list.php';
+        $path = __DIR__ . '/../../app/views/User/list.php';
         return new Response(new TemplateResource($path, ['users' => $users]));
     }
 
     public function create(Request $request)
     {
         $form = new UserForm($this->userModel);
-        if ($request->getMethod() === Request::POST){
+        if ($request->getMethod() === Request::POST) {
             $form->handleRequest($request);
             if ($form->isValid()) {
-                print_r($form->getViolations());
                 $this->userModel->create($form->getData());
                 return new RedirectResponse('/app.php/users');
             }
         }
-        $path =__DIR__.'/../../app/views/User/create.php';
-        return new Response(new TemplateResource($path, ['form' => $form, 'action' => 'create']));
+        $path = __DIR__ . '/../../app/views/User/create.php';
+        return new Response(new TemplateResource($path, ['form' => $form]));
     }
 
-    public function edit (Request $request, int $id)
+    public function edit(Request $request)
     {
-        $form = new UserForm($this->userModel, $this->userModel->getUser($id));
-        if ($request->getMethod() === Request::POST){
+        $id = $request->get('id');
+        $user = $this->userModel->getUser($id);
+        if (null === $user) {
+            throw new \Exception('user not found');
+        }
+        $form = new UserForm($this->userModel, $user);
+        if ($request->getMethod() === Request::POST) {
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->userModel->edit($form->getData(), $id);
                 return new RedirectResponse('/app.php/users');
             }
         }
-        $path =__DIR__.'/../../app/views/User/create.php';
-        $form->action='/app.php/users/'.$id.'/edit';
-        return new Response(new TemplateResource($path, ['form' => $form, 'action' => $id.'/edit']));
+        $path = __DIR__ . '/../../app/views/User/create.php';
+        return new Response(new TemplateResource($path, ['form' => $form, 'user' => $user]));
     }
 
-    public function delete(Request $request, int $id)
+    public function delete(Request $request)
     {
+        $id = $request->get('id');
+        if (!$this->userModel->getUser($id)){
+            throw new \Exception('User not exist');
+        }
         $this->userModel->delete($id);
         return new RedirectResponse('/app.php/users');
     }
