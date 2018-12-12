@@ -10,7 +10,7 @@ namespace Model;
 
 use Core\DB\Connection;
 
-class SubjectModel implements Model
+class SubjectModel
 {
     private $connection;
 

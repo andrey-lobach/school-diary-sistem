@@ -1,3 +1,4 @@
+<?php $isCreate = !isset($this->data['user']); ?>
 <!doctype html>
 <html>
 <head>
@@ -7,7 +8,7 @@
 <body>
 <a href="/app.php/users">Users List</a>
 <br>
-<h1><?php echo isset($this->data['user']) ? 'Edit User' : 'Create User'; ?></h1>
+<h1><?php echo  $isCreate? 'Create User':'Edit User'; ?></h1>
 <div class="errors-wrap">
     <?php
     $form = $this->data['form'];
@@ -18,7 +19,8 @@
 
 <form method="post">
     <input type="text" name="login" placeholder="login" required value="<?php echo $form->getData()['login']; ?>">
-    <input type="password" name="password" placeholder="password" required>
+    <input type="password" name="plain_password" placeholder="password" <?php if ($isCreate) echo 'required'?>>
+    <input type="password" name="plain_password_confirm" placeholder="confirm password" <?php if ($isCreate) echo 'required'?>>
     <select name="roles[]" multiple required>
         <?php foreach (\Enum\RolesEnum::getAll() as $role) { ?>
             <option value="<?php echo $role ?>"

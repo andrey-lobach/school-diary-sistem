@@ -9,15 +9,27 @@
 namespace Model;
 
 use Core\DB\Connection;
+use Core\Security\PasswordHelper;
+use Core\Security\StringBuilder;
 
-class UserModel implements Model
+class UserModel
 {
 
     private $connection;
+    /**
+     * @var PasswordHelper
+     */
+    private $passwordHelper;
+    /**
+     * @var StringBuilder
+     */
+    private $stringBuilder;
 
-    public function __construct(Connection $connection)
+    public function __construct(Connection $connection, PasswordHelper $passwordHelper, StringBuilder $stringBuilder)
     {
         $this->connection = $connection;
+        $this->passwordHelper = $passwordHelper;
+        $this->stringBuilder = $stringBuilder;
     }
 
     public function getList(): array
@@ -33,6 +45,7 @@ class UserModel implements Model
 
     public function create(array $user)
     {
+        $user = $this->preparePassword($user);
         $user['roles'] = json_encode($user['roles']);
         $sql = 'insert into users (login, password, roles) values (:login, :password, :roles)';
         $this->connection->query($sql, $user);
@@ -40,6 +53,7 @@ class UserModel implements Model
 
     public function edit(array $user, int $id)
     {
+        $user = $this->preparePassword($user);
         $user['roles'] = json_encode($user['roles']);
         $user['id'] = $id;
         $sql = 'update users set login=:login, password=:password, roles=:roles where id=:id';
@@ -48,7 +62,7 @@ class UserModel implements Model
 
     public function delete(int $id)
     {
-        $sql ='delete from users where id=:id';
+        $sql = 'delete from users where id=:id';
         $this->connection->query($sql, ['id' => $id]);
     }
 
@@ -73,5 +87,31 @@ class UserModel implements Model
             $user['roles'] = json_decode($user['roles']);
         }
         return $user ?: null;
+    }
+
+    public function findByLogin(string $login)
+    {
+        $sql = 'select * from users where login = :login';
+        $user = $this->connection->fetch($sql, ['login' => $login]);
+        if ($user) {
+            $user['roles'] = json_decode($user['roles']);
+        }
+        return $user ?: null;
+    }
+
+    private function preparePassword(array $user)
+    {
+        if ($user['plain_password']) {
+            $password = $user['password'] ?? null;
+            if ($password) {
+                $salt = $this->passwordHelper->getSaltPart($password);
+            } else {
+                $salt = $this->stringBuilder->build(5);
+            }
+            $hash = $this->passwordHelper->getHash($user['plain_password'], $salt);
+            $user['password'] = $this->passwordHelper->createToken($hash, $salt);
+        }
+        unset($user['plain_password']);
+        return $user;
     }
 }

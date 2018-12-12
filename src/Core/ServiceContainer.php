@@ -9,7 +9,7 @@
 namespace Core;
 
 
-class ServiceContainer
+final class ServiceContainer
 {
     /**
      * @var self
@@ -54,16 +54,20 @@ class ServiceContainer
 
     private function createService(string $class)
     {
-        if (!array_key_exists($class, $this->config['services'])){
-            throw new \LogicException(sprintf('Service %s undefined', $class));
-        }
         $parameters = [];
 
-        foreach ($this->config['services'][$class] as $parameter) {
+        $config = $this->config['services'][$class]?? [];
+        foreach ($config as $parameter) {
             if (substr($parameter, 0, 1) === '%' && substr($parameter, -1) === '%'){
                 $parameters[] = $this->getParameter(substr($parameter,1,-1));
             }else {
-                $parameters[] = $this->get($parameter);
+
+                $service = $this->get($parameter);
+                if ($service instanceof InvokeInterface){
+                 $parameters[] = $service();
+                } else {
+                    $parameters[] = $this->get($parameter);
+                }
             }
         }
         return new $class(...$parameters);
