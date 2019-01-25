@@ -2,24 +2,49 @@
 /**
  * Created by PhpStorm.
  * User: andrei
- * Date: 12.12.18
- * Time: 16.33
+ * Date: 25.1.19
+ * Time: 12.28
  */
 
 namespace Model;
+
+
 use Core\DB\Connection;
 
 class EnrollmentModel
 {
+    /**
+     * @var Connection
+     */
     private $connection;
 
+    /**
+     * EnrollmentModel constructor.
+     * @param Connection $connection
+     */
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
     }
-    public function create(array $enrollment)
+
+    /**
+     * @param int $classId
+     * @param string $role
+     * @return array
+     */
+    public function listOfClass(int $classId, string $role): array
     {
-        $sql = 'insert into enrollments (class_id, user_id, role) values (:class_id, :user_id, :role)';
-        $this->connection->query($sql, $enrollment);
+        $sql = 'select user_id from enrollments where (class_id=:class_id) and (role=:role);';
+        return $this->connection->fetchAll($sql, ['class_id' => $classId, 'role' => $role]);
     }
+
+    /**
+     * @return array
+     */
+    public function getAvailableUsers(): array
+    {
+
+        return [];
+    }
+
 }

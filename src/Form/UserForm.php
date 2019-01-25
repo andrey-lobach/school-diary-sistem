@@ -27,6 +27,8 @@ class UserForm
         $this->data['plain_password_confirm'] = $request->get('plain_password_confirm');
         $this->data['roles'] = (array)$request->get('roles', []);
         $id = $this->data['id'] ?? null;
+        $firstName = $this->data['first_name'] = $request->get('first_name');
+        $lastName = $this->data['last_name'] = $request->get('last_name');
         if ($this->userModel->checkLogin($this->data['login'], $id)) {
             $this->violations['login'] = 'Such login exists';
         }
@@ -39,7 +41,14 @@ class UserForm
                 $this->violations['plain_password_confirm'] = 'Password confirm do not match password';
             }
         }
-
+        $firstNameLen = strlen($firstName);
+        $lastNameLen = strlen($lastName);
+        if ($firstNameLen < 3 || $firstNameLen > 50) {
+            $this->violations['first_name'] = 'The length of the first name must not be shorter than 3 and longer than 50 characters';
+        }
+        if ($lastNameLen < 3 ||  $lastNameLen > 50) {
+            $this->violations['last_name'] = 'The length of the last name must not be shorter than 3 and longer than 50 characters';
+        }
         if (!$this->data['roles']) {
             $this->violations['roles'] = 'At least, one role is required';
         } elseif (array_diff($this->data['roles'], RolesEnum::getAll())) {

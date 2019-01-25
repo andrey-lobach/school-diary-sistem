@@ -70,4 +70,12 @@ class SecurityService
         $hash = $this->passwordHelper->getHash($password, $salt);
         return $hash === $hashPart;
     }
+
+    public function getRoles(): array
+    {
+        if ($this->isAuthorized()) {
+            return $this->session->get('user')['roles'];
+        }
+        return [];
+    }
 }

@@ -18,9 +18,12 @@
 </div>
 
 <form method="post">
-    <input type="text" name="login" placeholder="login" required value="<?php echo $form->getData()['login']; ?>">
+    <input type="text" name="login" placeholder="Login" required value="<?php echo $form->getData()['login']; ?>">
     <input type="password" name="plain_password" placeholder="password" <?php if ($isCreate) echo 'required'?>>
     <input type="password" name="plain_password_confirm" placeholder="confirm password" <?php if ($isCreate) echo 'required'?>>
+    <input type="text" name="first_name" placeholder="First Name" required value="<?php echo $form->getData()['first_name']; ?>">
+    <input type="text" name="last_name" placeholder="Last Name" required value="<?php echo $form->getData()['last_name']; ?>">
+
     <select name="roles[]" multiple required>
         <?php foreach (\Enum\RolesEnum::getAll() as $role) { ?>
             <option value="<?php echo $role ?>"

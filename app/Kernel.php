@@ -4,14 +4,16 @@ use Core\Request\Request;
 use Core\Response\Response;
 use Core\Router\Route;
 use Core\Router\Router;
+use Core\Security\Guardian;
 
 class Kernel
 {
     private $config;
     private $connection;
+
     public function __construct()
     {
-        $this->config = require __DIR__ . '/config/config.php';
+        $this->config = require __DIR__.'/config/config.php';
         $this->container = \Core\ServiceContainer::getInstance($this->config);
     }
 
@@ -27,15 +29,22 @@ class Kernel
         if ($route === null) {
             throw new Exception('route not found');
         }
+
         return $route;
     }
 
-    public function createResponse(Request $request):Response
+    public function createResponse(Request $request): Response
     {
         $route = $this->getRoute($request);
+        /** @var Guardian $guardrian */
+        $guardrian = $this->container->get(Guardian::class);
+        if ($response = $guardrian->handle($route, $request)) {
+            return $response;
+        }
         $controller = $this->getController($route);
         $params = $route->getPathValues($request->getPath());
         $request->setAttributes($params);
+
         return call_user_func([$controller, $route->getMethod()], $request);
     }
 

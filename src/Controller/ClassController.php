@@ -38,7 +38,7 @@ class ClassController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->classModel->create($form->getData());
-                return new RedirectResponse('/app.php/classes');
+                return new RedirectResponse('/classes');
             }
         }
         $path = __DIR__ . '/../../app/views/Class/create.php';
@@ -57,7 +57,7 @@ class ClassController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->classModel->edit($form->getData(), $id);
-                return new RedirectResponse('/app.php/classes');
+                return new RedirectResponse('/classes');
             }
         }
         $path = __DIR__ . '/../../app/views/Class/create.php';
@@ -71,7 +71,7 @@ class ClassController
             throw new \Exception('Class not exist');
         }
         $this->classModel->delete($id);
-        return new RedirectResponse('/app.php/classes');
+        return new RedirectResponse('/classes');
     }
 
 }

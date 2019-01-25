@@ -39,7 +39,7 @@ class SubjectController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->subjectModel->create($form->getData());
-                return new RedirectResponse('/app.php/subjects');
+                return new RedirectResponse('/subjects');
             }
         }
         $path = __DIR__ . '/../../app/views/Subject/create.php';
@@ -58,7 +58,7 @@ class SubjectController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->subjectModel->edit($form->getData(), $id);
-                return new RedirectResponse('/app.php/subjects');
+                return new RedirectResponse('/subjects');
             }
         }
         $path = __DIR__ . '/../../app/views/Subject/create.php';
@@ -72,7 +72,7 @@ class SubjectController
             throw new \Exception('Subject not exist');
         }
         $this->subjectModel->delete($id);
-        return new RedirectResponse('/app.php/subjects');
+        return new RedirectResponse('/subjects');
     }
 
 }

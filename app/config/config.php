@@ -5,7 +5,8 @@ return [
             'dsn' => 'mysql:host=localhost; dbname=Diary',
             'user' => 'root',
             'password' => 'YjdsqgfhjkM_2'
-        ]
+        ],
+        'security' => require __DIR__.'/security.php'
     ],
-    'services' => require_once __DIR__ . '/services.php',
+    'services' => require __DIR__ . '/services.php',
 ];

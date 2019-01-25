@@ -43,7 +43,7 @@ class SecurityController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->securityService->authorize($form->getData());
-                return new RedirectResponse('/app.php');
+                return new RedirectResponse('');
             }
         }
         $path = __DIR__ . '/../../app/views/User/login.php';
@@ -53,7 +53,7 @@ class SecurityController
     public function logout()
     {
         $this->securityService->logout();
-        return new RedirectResponse('/app.php');
+        return new RedirectResponse('');
 
     }
 }

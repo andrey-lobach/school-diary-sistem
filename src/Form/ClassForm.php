@@ -15,7 +15,7 @@ class ClassForm
 
     private $data;
     private $violations = [];
-    private $ClassModel;
+    private $classModel;
 
     public function __construct(ClassModel $classModel, array $data = [])
     {
@@ -48,8 +48,10 @@ class ClassForm
         return $this->violations;
     }
 
-
-    public function isValid()
+    /**
+     * @return bool
+     */
+    public function isValid(): bool
     {
         return count($this->violations) === 0;
     }

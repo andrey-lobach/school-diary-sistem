@@ -39,7 +39,7 @@ class UserController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->userModel->create($form->getData());
-                return new RedirectResponse('/app.php/users');
+                return new RedirectResponse('/users');
             }
         }
         $path = __DIR__ . '/../../app/views/User/create.php';
@@ -58,7 +58,7 @@ class UserController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->userModel->edit($form->getData(), $id);
-                return new RedirectResponse('/app.php/users');
+                return new RedirectResponse('/users');
             }
         }
         $path = __DIR__ . '/../../app/views/User/create.php';
@@ -72,6 +72,6 @@ class UserController
             throw new \Exception('User not exist');
         }
         $this->userModel->delete($id);
-        return new RedirectResponse('/app.php/users');
+        return new RedirectResponse('/users');
     }
 }

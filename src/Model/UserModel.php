@@ -25,6 +25,12 @@ class UserModel
      */
     private $stringBuilder;
 
+    /**
+     * UserModel constructor.
+     * @param Connection $connection
+     * @param PasswordHelper $passwordHelper
+     * @param StringBuilder $stringBuilder
+     */
     public function __construct(Connection $connection, PasswordHelper $passwordHelper, StringBuilder $stringBuilder)
     {
         $this->connection = $connection;
@@ -32,40 +38,63 @@ class UserModel
         $this->stringBuilder = $stringBuilder;
     }
 
+    /**
+     * @return array
+     */
     public function getList(): array
     {
-        $sql = 'select * from users';
+        $sql = 'select * from users order by login ASC';
         $users = $this->connection->fetchAll($sql);
-        $users = array_map(function (array $user) {
-            $user['roles'] = json_decode($user['roles']);
-            return $user;
-        }, $users);
+        $users = array_map(
+            function (array $user) {
+                $user['roles'] = json_decode($user['roles']);
+
+                return $user;
+            },
+            $users
+        );
+
         return $users;
     }
 
+    /**
+     * @param array $user
+     */
     public function create(array $user)
     {
         $user = $this->preparePassword($user);
         $user['roles'] = json_encode($user['roles']);
-        $sql = 'insert into users (login, password, roles) values (:login, :password, :roles)';
+        $sql = 'insert into users (login, password, first_name, last_name, roles) values (:login, :password, :first_name, :last_name, :roles);';
         $this->connection->query($sql, $user);
     }
 
+    /**
+     * @param array $user
+     * @param int $id
+     */
     public function edit(array $user, int $id)
     {
         $user = $this->preparePassword($user);
         $user['roles'] = json_encode($user['roles']);
         $user['id'] = $id;
-        $sql = 'update users set login=:login, password=:password, roles=:roles where id=:id';
+        $sql = 'update users set login=:login, password=:password, first_name=:first_name, last_name=:last_name, roles=:roles where id=:id';
         $this->connection->query($sql, $user);
     }
 
+    /**
+     * @param int $id
+     */
     public function delete(int $id)
     {
         $sql = 'delete from users where id=:id';
         $this->connection->query($sql, ['id' => $id]);
     }
 
+    /**
+     * @param string $login
+     * @param int|null $id
+     * @return bool
+     */
     public function checkLogin(string $login, int $id = null): bool
     {
         $params = ['login' => $login];
@@ -79,6 +108,10 @@ class UserModel
         return (bool)$this->connection->fetch($sql, $params, \PDO::FETCH_COLUMN);
     }
 
+    /**
+     * @param int $id
+     * @return array|null
+     */
     public function getUser(int $id)
     {
         $sql = 'select * from users where id = :id';
@@ -86,9 +119,14 @@ class UserModel
         if ($user) {
             $user['roles'] = json_decode($user['roles']);
         }
+
         return $user ?: null;
     }
 
+    /**
+     * @param string $login
+     * @return array|null
+     */
     public function findByLogin(string $login)
     {
         $sql = 'select * from users where login = :login';
@@ -96,10 +134,15 @@ class UserModel
         if ($user) {
             $user['roles'] = json_decode($user['roles']);
         }
+
         return $user ?: null;
     }
 
-    private function preparePassword(array $user)
+    /**
+     * @param array $user
+     * @return array
+     */
+    private function preparePassword(array $user): array
     {
         if ($user['plain_password']) {
             $password = $user['password'] ?? null;
@@ -112,6 +155,7 @@ class UserModel
             $user['password'] = $this->passwordHelper->createToken($hash, $salt);
         }
         unset($user['plain_password']);
+
         return $user;
     }
 }

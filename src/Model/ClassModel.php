@@ -21,7 +21,7 @@ class ClassModel
 
     public function getList(): array
     {
-        $sql = 'select * from classes';
+        $sql = 'select * from classes order by title ASC';
         $classes = $this->connection->fetchAll($sql);
         return $classes;
     }
