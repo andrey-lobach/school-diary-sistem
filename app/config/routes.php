@@ -16,8 +16,13 @@ Router::add('/classes/create', \Controller\ClassController::class, 'create');
 Router::add('/classes/{id}/edit', \Controller\ClassController::class, 'edit');
 Router::add('/classes/{id}/delete', \Controller\ClassController::class, 'delete');
 Router::add('/enrollment', \Controller\EnrollmentController::class, 'list');
+Router::add('/enrollment/addStudent', \Controller\EnrollmentController::class, 'addStudent');
+Router::add('/enrollment/addTeacher', \Controller\EnrollmentController::class, 'addTeacher');
+Router::add('/enrollment/{id}/delete', \Controller\EnrollmentController::class, 'delete');
 Router::add('/login', \Controller\SecurityController::class, 'login');
 Router::add('/logout', \Controller\SecurityController::class, 'logout');
-//TODO 1)авторизация через сессию (создать класс-обертку session) !!!
+
+
+
 //TODO 2)доделать остальные части приложения
 //TODO 3)написать меню

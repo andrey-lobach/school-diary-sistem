@@ -5,7 +5,7 @@
     <title></title>
 </head>
 <body>
-<a href="/app.php/subjects">Subjects List</a>
+<a href="/subjects">Subjects List</a>
 <br>
 <h1><?php echo isset($this->data['subject']) ? 'Edit Subject' : 'Create Subject'; ?></h1>
 <div class="errors-wrap">

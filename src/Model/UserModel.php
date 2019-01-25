@@ -158,4 +158,5 @@ class UserModel
 
         return $user;
     }
+
 }

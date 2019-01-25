@@ -5,7 +5,7 @@
     <title></title>
 </head>
 <body>
-<a href="/app.php/classes">Classes List</a>
+<a href="/classes">Classes List</a>
 <br>
 <h1><?php echo isset($this->data['class']) ? 'Edit Class' : 'Create Class'; ?></h1>
 <div class="errors-wrap">
