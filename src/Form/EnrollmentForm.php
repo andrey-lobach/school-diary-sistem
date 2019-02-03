@@ -8,20 +8,22 @@
 
 namespace Form;
 
-
 use Core\Request\Request;
 use Model\EnrollmentModel;
 
 class EnrollmentForm
 {
     private $data;
+
     private $violations = [];
+
     private $enrollmentModel;
 
     /**
      * EnrollmentForm constructor.
+     *
      * @param EnrollmentModel $enrollmentModel
-     * @param array $data
+     * @param array           $data
      */
     public function __construct(EnrollmentModel $enrollmentModel, array $data = [])
     {
@@ -34,20 +36,23 @@ class EnrollmentForm
      */
     public function handleRequest(Request $request)
     {
-        $classId = $request->get('class_id');
-        if ($classId) {
-            $this->data['class_id'] = $classId;
+        $classIds = $this->data['classIds'] = $request->get('class_ids', []);
+        if (!$classIds) {
+            $this->violations['classIds'] = 'Choose at least 1 class';
         }
-        $classes = $request->get('classes', []);
-        if ($classes) {
-            $this->data['classes'] = $classes;
+        $userIds = $this->data['userIds'] = $request->get('user_ids', []);
+        if (!$userIds) {
+            $this->violations['userIds'] = 'Choose at least 1 user';
         }
-        $users = $this->data['users'] = $request->get('users', []);
-        if (count($users) === 0) {
-            $this->violations['users'] = 'Choose at least 1 user';
+        $hasEnrollments = [];
+
+        foreach ($userIds as $userId) {
+            foreach ($classIds as $classId) {
+                $hasEnrollments[] =$this->enrollmentModel->isEnrollment($userId, $classId);
+            }
         }
-        if (!$classId && !$classes) {
-            $this->violations['classes'] = 'Class is required';
+        if (array_filter($hasEnrollments)) {
+            $this->violations['userIds'] = 'Some users has enrolled already';
         }
     }
 
@@ -67,7 +72,6 @@ class EnrollmentForm
         return $this->violations;
     }
 
-
     /**
      * @return bool
      */
@@ -75,5 +79,4 @@ class EnrollmentForm
     {
         return count($this->violations) === 0;
     }
-
 }

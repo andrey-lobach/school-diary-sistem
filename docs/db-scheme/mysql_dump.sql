@@ -99,7 +99,7 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `first_name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
-  `roles` varchar(255) DEFAULT NULL,
+  `role` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `login` (`login`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

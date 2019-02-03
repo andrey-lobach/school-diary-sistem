@@ -24,10 +24,11 @@
     <input type="text" name="first_name" placeholder="First Name" required value="<?php echo $form->getData()['first_name']; ?>">
     <input type="text" name="last_name" placeholder="Last Name" required value="<?php echo $form->getData()['last_name']; ?>">
 
-    <select name="roles[]" multiple required>
+    <select name="role" required>
+        <option value=""></option>
         <?php foreach (\Enum\RolesEnum::getAll() as $role) { ?>
             <option value="<?php echo $role ?>"
-                <?php if (in_array($role, $form->getData()['roles'])) {echo 'selected';} ?>>
+                <?php if ($role === $form->getData()['role']) {echo 'selected';} ?>>
                 <?php echo $role ?>
             </option>
         <?php } ?>

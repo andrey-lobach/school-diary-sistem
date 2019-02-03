@@ -10,7 +10,7 @@
         <th>Login</th>
         <th>First Name</th>
         <th>Last Name</th>
-        <th>Roles</th>
+        <th>Role</th>
         <th></th>
     </tr>
     </thead>
@@ -20,7 +20,7 @@
             <td><?php echo $user['login'] ?></td>
             <td><?php echo $user['first_name'] ?></td>
             <td><?php echo $user['last_name'] ?></td>
-            <td><?php echo implode(', ', $user['roles']); ?></td>
+            <td><?php echo $user['role']; ?></td>
             <td>
                 <a href="/users/<?php echo $user['id']; ?>/edit">Edit</a>
                 <a href="/users/<?php echo $user['id']; ?>/delete">Delete</a>

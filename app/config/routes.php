@@ -6,7 +6,6 @@ Router::add('/users', \Controller\UserController::class, 'list');
 Router::add('/users/create', \Controller\UserController::class, 'create');
 Router::add('/users/{id}/edit', \Controller\UserController::class, 'edit', ['id' => '\d+']);
 Router::add('/users/{id}/delete', \Controller\UserController::class, 'delete', ['id' => '\d+']);
-Router::add('/users/{user_id}/courses/{course_id}/grades', \Controller\UserController::class, 'delete', ['course_id' => '\d+','user_id' => '\d+' ]);
 Router::add('/subjects', \Controller\SubjectController::class, 'list');
 Router::add('/subjects/create', \Controller\SubjectController::class, 'create');
 Router::add('/subjects/{id}/edit', \Controller\SubjectController::class, 'edit');
@@ -18,11 +17,7 @@ Router::add('/classes/{id}/delete', \Controller\ClassController::class, 'delete'
 Router::add('/enrollment', \Controller\EnrollmentController::class, 'list');
 Router::add('/enrollment/addStudent', \Controller\EnrollmentController::class, 'addStudent');
 Router::add('/enrollment/addTeacher', \Controller\EnrollmentController::class, 'addTeacher');
-Router::add('/enrollment/{id}/delete', \Controller\EnrollmentController::class, 'delete');
+Router::add('/enrollment/{user_id}/{class_id}/delete', \Controller\EnrollmentController::class, 'delete', ['user_id' => '\d+','class_id' => '\d+' ]);
 Router::add('/login', \Controller\SecurityController::class, 'login');
 Router::add('/logout', \Controller\SecurityController::class, 'logout');
 
-
-
-//TODO 2)доделать остальные части приложения
-//TODO 3)написать меню

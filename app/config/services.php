@@ -1,11 +1,13 @@
 <?php
 return [
-    \Controller\ClassController::class => [\Model\ClassModel::class],
-    \Controller\SecurityController::class => [\Service\SecurityService::class, \Core\HTTP\SessionProvider::class],
-    \Controller\SubjectController::class => [\Model\SubjectModel::class],
-    \Controller\UserController::class => [\Model\UserModel::class],
-    \Controller\EnrollmentController::class => [\Model\EnrollmentModel::class, \Model\ClassModel::class, \Model\UserModel::class],
+    \Controller\ClassController::class => [\Model\ClassModel::class, \Core\Template\Renderer::class],
+    \Controller\SecurityController::class => [\Service\SecurityService::class, \Core\HTTP\SessionProvider::class, \Core\Template\Renderer::class],
+    \Controller\SubjectController::class => [\Model\SubjectModel::class, \Core\Template\Renderer::class],
+    \Controller\UserController::class => [\Model\UserModel::class, \Core\Template\Renderer::class],
+    \Controller\EnrollmentController::class => [\Model\EnrollmentModel::class, \Model\ClassModel::class, \Model\UserModel::class, \Core\Template\Renderer::class],
     \Core\DB\Connection::class => ['%database%'],
+    \Core\Template\MenuBuilder::class => ['%menu%', \Service\SecurityService::class],
+    \Core\Template\Renderer::class => ['%template_dir%', \Core\Template\MenuBuilder::class],
     // \Core\Security\Guardian::class => [\Middleware\GuestMiddleware::class, \Middleware\RoleMiddleware::class],
     \Model\UserModel::class => [
         \Core\DB\Connection::class,

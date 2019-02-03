@@ -17,7 +17,7 @@ class UserForm
     public function __construct(UserModel $userModel, array $data = [])
     {
         $this->userModel = $userModel;
-        $this->data = array_merge(['roles' => []], $data);
+        $this->data = $data;
     }
 
     public function handleRequest(Request $request)
@@ -25,7 +25,7 @@ class UserForm
         $this->data['login'] = $request->get('login');
         $this->data['plain_password'] = $request->get('plain_password');
         $this->data['plain_password_confirm'] = $request->get('plain_password_confirm');
-        $this->data['roles'] = (array)$request->get('roles', []);
+        $this->data['role'] = $request->get('role');
         $id = $this->data['id'] ?? null;
         $firstName = $this->data['first_name'] = $request->get('first_name');
         $lastName = $this->data['last_name'] = $request->get('last_name');
@@ -49,10 +49,10 @@ class UserForm
         if ($lastNameLen < 3 ||  $lastNameLen > 50) {
             $this->violations['last_name'] = 'The length of the last name must not be shorter than 3 and longer than 50 characters';
         }
-        if (!$this->data['roles']) {
-            $this->violations['roles'] = 'At least, one role is required';
-        } elseif (array_diff($this->data['roles'], RolesEnum::getAll())) {
-            $this->violations['roles'] = 'Invalid roles';
+        if (!$this->data['role']) {
+            $this->violations['role'] = 'At least, one role is required';
+        } elseif (array_diff($this->data['role'], RolesEnum::getAll())) {
+            $this->violations['role'] = 'Invalid roles';
         }
     }
 

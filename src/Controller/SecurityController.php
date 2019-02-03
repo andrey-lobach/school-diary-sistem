@@ -8,12 +8,11 @@
 
 namespace Controller;
 
-
 use Core\HTTP\Session;
 use Core\Request\Request;
 use Core\Response\RedirectResponse;
 use Core\Response\Response;
-use Core\Response\TemplateResource;
+use Core\Template\Renderer;
 use Form\LoginForm;
 use Service\SecurityService;
 
@@ -23,18 +22,37 @@ class SecurityController
      * @var SecurityService
      */
     private $securityService;
+
     /**
      * @var Session
      */
     private $session;
 
-    public function __construct(SecurityService $securityService, Session $session)
+    /**
+     * @var Renderer
+     */
+    private $renderer;
+
+    /**
+     * SecurityController constructor.
+     *
+     * @param SecurityService $securityService
+     * @param Session         $session
+     * @param Renderer        $renderer
+     */
+    public function __construct(SecurityService $securityService, Session $session, Renderer $renderer)
     {
 
         $this->securityService = $securityService;
         $this->session = $session;
+        $this->renderer = $renderer;
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return RedirectResponse|Response
+     */
     public function login(Request $request)
     {
         echo json_encode($this->session->get('user'));
@@ -43,17 +61,22 @@ class SecurityController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->securityService->authorize($form->getData());
+
                 return new RedirectResponse('');
             }
         }
-        $path = __DIR__ . '/../../app/views/User/login.php';
-        return new Response(new TemplateResource($path, ['form' => $form]));
+        $path = 'User/login.php';
+
+        return new Response($this->renderer->render($path, ['form' => $form]));
     }
 
-    public function logout()
+    /**
+     * @return RedirectResponse
+     */
+    public function logout(): RedirectResponse
     {
         $this->securityService->logout();
-        return new RedirectResponse('');
 
+        return new RedirectResponse('');
     }
 }

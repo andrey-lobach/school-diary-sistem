@@ -7,30 +7,54 @@
  */
 
 namespace Controller;
+
+use Core\Template\Renderer;
 use Model\ClassModel;
-use Core\Response\EmptyResource;
 use Core\Response\RedirectResponse;
 use Core\Response\Response;
 use Core\Request\Request;
 use Core\Response\TemplateResource;
 use Form\ClassForm;
 
-
 class ClassController
 {
     private $classModel;
 
-    public function __construct(ClassModel $classModel)
+    /**
+     * @var Renderer
+     */
+    private $renderer;
+
+    /**
+     * ClassController constructor.
+     *
+     * @param ClassModel $classModel
+     * @param Renderer   $renderer
+     */
+    public function __construct(ClassModel $classModel, Renderer $renderer)
     {
         $this->classModel = $classModel;
+        $this->renderer = $renderer;
     }
 
-    public function list()
+    /**
+     * @return Response
+     * @throws \Exception
+     */
+    public function list(): Response
     {
         $classes = $this->classModel->getList();
-        $path = __DIR__ . '/../../app/views/Class/list.php';
-        return new Response(new TemplateResource($path, ['classes' => $classes]));
+        $path = 'Class/list.php';
+
+        return new Response($this->renderer->render($path, ['classes' => $classes]));
     }
+
+    /**
+     * @param Request $request
+     *
+     * @return RedirectResponse|Response
+     * @throws \Exception
+     */
     public function create(Request $request)
     {
         $form = new ClassForm($this->classModel);
@@ -38,40 +62,56 @@ class ClassController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->classModel->create($form->getData());
+
                 return new RedirectResponse('/classes');
             }
         }
-        $path = __DIR__ . '/../../app/views/Class/create.php';
-        return new Response(new TemplateResource($path, ['form' => $form]));
+        $path = 'Class/create.php';
+
+        return new Response($this->renderer->render($path, ['form' => $form]));
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return RedirectResponse|Response
+     * @throws \Exception
+     */
     public function edit(Request $request)
     {
         $id = $request->get('id');
         $class = $this->classModel->getClass($id);
         if (null === $class) {
-            throw new \Exception('class not found');
+            throw new \RuntimeException('class not found');
         }
         $form = new ClassForm($this->classModel, $class);
         if ($request->getMethod() === Request::POST) {
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->classModel->edit($form->getData(), $id);
+
                 return new RedirectResponse('/classes');
             }
         }
-        $path = __DIR__ . '/../../app/views/Class/create.php';
-        return new Response(new TemplateResource($path, ['form' => $form, 'class' => $class]));
+        $path = 'Class/create.php';
+
+        return new Response($this->renderer->render($path, ['form' => $form, 'class' => $class]));
     }
 
-    public function delete(Request $request)
+    /**
+     * @param Request $request
+     *
+     * @return RedirectResponse
+     * @throws \Exception
+     */
+    public function delete(Request $request): RedirectResponse
     {
         $id = $request->get('id');
-        if (!$this->classModel->getClass($id)){
-            throw new \Exception('Class not exist');
+        if (!$this->classModel->getClass($id)) {
+            throw new \RuntimeException('Class not exist');
         }
         $this->classModel->delete($id);
+
         return new RedirectResponse('/classes');
     }
-
 }

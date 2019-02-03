@@ -71,11 +71,11 @@ class SecurityService
         return $hash === $hashPart;
     }
 
-    public function getRoles(): array
+    public function getRole(): string
     {
         if ($this->isAuthorized()) {
-            return $this->session->get('user')['roles'];
+            return $this->session->get('user')['role'];
         }
-        return [];
+        return '';
     }
 }

@@ -8,30 +8,54 @@
 
 namespace Controller;
 
-use Core\Response\EmptyResource;
 use Core\Response\RedirectResponse;
 use Core\Response\Response;
 use Core\Request\Request;
-use Core\Response\TemplateResource;
+use Core\Template\Renderer;
 use Form\UserForm;
 use Model\UserModel;
 
 class UserController
 {
+    /**
+     * @var UserModel
+     */
     private $userModel;
 
-    public function __construct(UserModel $user)
+    /**
+     * @var Renderer
+     */
+    private $renderer;
+
+    /**
+     * UserController constructor.
+     *
+     * @param UserModel $user
+     * @param Renderer  $renderer
+     */
+    public function __construct(UserModel $user, Renderer $renderer)
     {
         $this->userModel = $user;
+        $this->renderer = $renderer;
     }
 
-    public function list()
+    /**
+     * @return Response
+     */
+    public function list(): Response
     {
         $users = $this->userModel->getList();
-        $path = __DIR__ . '/../../app/views/User/list.php';
-        return new Response(new TemplateResource($path, ['users' => $users]));
+        $path = 'User/list.php';
+
+        return new Response($this->renderer->render($path, ['users' => $users]));
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return RedirectResponse|Response
+     * @throws \Exception
+     */
     public function create(Request $request)
     {
         $form = new UserForm($this->userModel);
@@ -39,39 +63,55 @@ class UserController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->userModel->create($form->getData());
+
                 return new RedirectResponse('/users');
             }
         }
-        $path = __DIR__ . '/../../app/views/User/create.php';
-        return new Response(new TemplateResource($path, ['form' => $form]));
+        $path = 'User/create.php';
+
+        return new Response($this->renderer->render($path, ['form' => $form]));
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return RedirectResponse|Response
+     */
     public function edit(Request $request)
     {
         $id = $request->get('id');
         $user = $this->userModel->getUser($id);
         if (null === $user) {
-            throw new \Exception('user not found');
+            throw new \RuntimeException('user not found');
         }
         $form = new UserForm($this->userModel, $user);
         if ($request->getMethod() === Request::POST) {
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->userModel->edit($form->getData(), $id);
+
                 return new RedirectResponse('/users');
             }
         }
-        $path = __DIR__ . '/../../app/views/User/create.php';
-        return new Response(new TemplateResource($path, ['form' => $form, 'user' => $user]));
+        $path = 'User/create.php';
+
+        return new Response($this->renderer->render($path, ['form' => $form, 'user' => $user]));
     }
 
-    public function delete(Request $request)
+    /**
+     * @param Request $request
+     *
+     * @return RedirectResponse
+     * @throws \Exception
+     */
+    public function delete(Request $request): RedirectResponse
     {
         $id = $request->get('id');
-        if (!$this->userModel->getUser($id)){
-            throw new \Exception('User not exist');
+        if (!$this->userModel->getUser($id)) {
+            throw new \RuntimeException('User not exist');
         }
         $this->userModel->delete($id);
+
         return new RedirectResponse('/users');
     }
 }
