@@ -9,59 +9,107 @@
 namespace Model;
 
 use Core\DB\Connection;
+use Enum\RolesEnum;
 
 class ClassModel
 {
     private $connection;
 
+    /**
+     * ClassModel constructor.
+     *
+     * @param Connection $connection
+     */
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
     }
 
+    /**
+     * @return array
+     */
     public function getList(): array
     {
-        $sql = 'select * from classes order by title ASC';
-        $classes = $this->connection->fetchAll($sql);
-        return $classes;
+        $sql = 'SELECT * FROM classes ORDER BY title ASC';
+
+        return $this->connection->fetchAll($sql);
     }
 
+    /**
+     * @param array $class
+     */
     public function create(array $class)
     {
-        $sql = 'insert into classes (title) values (:title)';
+        $sql = 'INSERT INTO classes (title) VALUES (:title)';
         $this->connection->query($sql, $class);
     }
 
+    /**
+     * @param array $class
+     * @param int   $id
+     */
     public function edit(array $class, int $id)
     {
         $class['id'] = $id;
-        $sql = 'update classes set title=:title where id=:id';
+        $sql = 'UPDATE classes SET title=:title WHERE id=:id';
         $this->connection->query($sql, $class);
     }
 
+    /**
+     * @param int $id
+     */
     public function delete(int $id)
     {
-        $sql = 'delete from classes where id=:id';
+        $sql = 'DELETE FROM classes WHERE id=:id';
         $this->connection->query($sql, ['id' => $id]);
     }
 
+    /**
+     * @param string   $title
+     * @param int|null $id
+     *
+     * @return bool
+     */
     public function checkTitle(string $title, int $id = null): bool
     {
         $params = ['title' => $title];
         if (null === $id) {
-            $sql = 'select id from classes where title=:title';
+            $sql = 'SELECT id FROM classes WHERE title=:title';
         } else {
-            $sql = 'select id from classes where title=:title and id != :id';
+            $sql = 'SELECT id FROM classes WHERE title=:title AND id != :id';
             $params['id'] = $id;
         }
 
-        return (bool)$this->connection->fetch($sql, $params, \PDO::FETCH_COLUMN);
+        return (bool) $this->connection->fetch($sql, $params, \PDO::FETCH_COLUMN);
     }
 
+    /**
+     * @param int $id
+     *
+     * @return null|array
+     */
     public function getClass(int $id)
     {
-        $sql = 'select * from classes where id = :id';
+        $sql = 'SELECT * FROM classes WHERE id = :id';
         $user = $this->connection->fetch($sql, ['id' => $id]);
+
         return $user ?: null;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFullList(): array
+    {
+        $list = [];
+        $classes = $this->getList();
+        foreach ($classes as $class) {
+            $sql = 'select user_id from enrollments where (class_id=:class_id) and (role=:role);';
+            $students = $this->connection->fetchAll($sql, ['class_id' => $class['id'], 'role' => RolesEnum::STUDENT]);
+            $teachers = $this->connection->fetchAll($sql, ['class_id' => $class['id'], 'role' => RolesEnum::TEACHER]);
+            $list[$class['id']] = ['students' => $students, 'teachers' => $teachers];
+        }
+
+        return $list;
     }
 }

@@ -11,7 +11,6 @@ namespace Controller;
 use Core\Request\Request;
 use Core\Response\RedirectResponse;
 use Core\Response\Response;
-use Core\Response\TemplateResource;
 use Core\Template\Renderer;
 use Enum\RolesEnum;
 use Form\EnrollmentForm;
@@ -49,8 +48,12 @@ class EnrollmentController
      * @param UserModel       $userModel
      * @param Renderer        $renderer
      */
-    public function __construct(EnrollmentModel $enrollmentModel, ClassModel $classModel, UserModel $userModel, Renderer $renderer)
-    {
+    public function __construct(
+        EnrollmentModel $enrollmentModel,
+        ClassModel $classModel,
+        UserModel $userModel,
+        Renderer $renderer
+    ) {
         $this->enrollmentModel = $enrollmentModel;
         $this->classModel = $classModel;
         $this->userModel = $userModel;
@@ -62,21 +65,14 @@ class EnrollmentController
      */
     public function list(): Response
     {
-        $classes = $this->classModel->getList();
-        $list = [];
-        foreach ($classes as $class) { // TODO
-            $students = $this->enrollmentModel->listOfClass($class['id'], RolesEnum::STUDENT);
-            $teachers = $this->enrollmentModel->listOfClass($class['id'], RolesEnum::TEACHER);
-            $list[$class['id']] = ['students' => $students, 'teachers' => $teachers];
-        }
         $path = 'Enrollment/list.php';
 
         return new Response(
             $this->renderer->render(
                 $path,
                 [
-                    'classes'    => $classes,
-                    'list'       => $list,
+                    'classes'    => $this->classModel->getList(),
+                    'list'       => $this->classModel->getFullList(),
                     'userModel'  => $this->userModel,
                     'classModel' => $this->classModel,
                 ]
@@ -96,6 +92,7 @@ class EnrollmentController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->enrollmentModel->addStudents($form->getData()['userIds'], $form->getData()['classIds'][0]);
+
                 return new RedirectResponse('/enrollment');
             }
         }
@@ -126,36 +123,19 @@ class EnrollmentController
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                $classes = $form->getData()['classIds'];
-                $teachers = $form->getData()['userIds'];
-                foreach ($teachers as $teacher) {
-                    foreach ($classes as $class) {
-                        $this->enrollmentModel->create(
-                            ['user_id' => $teacher, 'class_id' => $class['id'], 'role' => 'teacher']
-                        );
-                    }
-                }
+                $this->enrollmentModel->addTeachers($form->getData()['userIds'], $form->getData()['classIds']);
 
                 return new RedirectResponse('/enrollment');
-            }
-        }
-        $teachers = [];
-        foreach ($this->userModel->getList() as $user) {
-            if (in_array('teacher', $user['role'])) {
-                array_push($teachers, $user);
             }
         }
         $path = 'Enrollment/create.php';
 
         return new Response(
-            new TemplateResource(
+            $this->renderer->render(
                 $path,
                 [
                     'form'           => $form,
-                    'availableUsers' => $this->enrollmentModel->getAvailableTeachers(
-                        $teachers,
-                        count($this->classModel->getList())
-                    ),
+                    'availableUsers' => $this->userModel->getAvailableTeachers(),
                     'classes'        => $this->classModel->getList(),
                     'teacher'        => true,
                 ]
@@ -174,7 +154,7 @@ class EnrollmentController
         $userId = $request->get('user_id');
         $classId = $request->get('class_id');
         if (!$this->userModel->getUser($userId)) {
-            throw new \Exception('Enrollment or user not exist');
+            throw new \RuntimeException('Enrollment or user not exist');
         }
         $this->enrollmentModel->delete($userId, $classId);
 

@@ -159,6 +159,26 @@ class UserModel
                 LEFT JOIN enrollments ON (users.id = enrollments.user_id) 
                 WHERE (enrollments.id IS NULL AND users.role =:role) 
                 ORDER BY login ASC';
+
         return $this->connection->fetchAll($sql, ['role' => RolesEnum::STUDENT]);
+    }
+
+    /**
+     * @return array
+     */
+    public function getAvailableTeachers(): array
+    {
+        $sql = 'SELECT count(id) FROM classes';
+        $countOfClasses = $this->connection->fetch($sql);
+        $sql = 'SELECT * FROM users WHERE role = :role';
+        $teachers = $this->connection->fetchAll($sql, ['role' => RolesEnum::TEACHER]);
+        foreach ($teachers as $key => $teacher) {
+            $sql = 'SELECT count(id) FROM enrollments where id=:id';
+            if ($countOfClasses === $this->connection->fetch($sql, ['id' => $teacher['id']])) {
+                unset($teachers[$key]);
+            }
+        }
+
+        return $teachers;
     }
 }
