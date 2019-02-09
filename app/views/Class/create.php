@@ -5,16 +5,12 @@
     <title></title>
 </head>
 <body>
+<?php require __DIR__.'/../Core/menu.php'; ?>
 <a href="/classes">Classes List</a>
 <br>
 <h1><?php echo isset($this->data['class']) ? 'Edit Class' : 'Create Class'; ?></h1>
-<div class="errors-wrap">
-    <?php
-    $form = $this->data['form'];
-    foreach ($form->getViolations() as $key => $violation) { ?>
-        <div class="error-item"><?php echo $violation; ?></div>
-    <?php } ?>
-</div>
+<?php require __DIR__.'/../Core/form_errors.php'; ?>
+
 
 <form method="post">
     <input type="text" name="title" placeholder="title" required value="<?php echo $form->getData()['title']; ?>">

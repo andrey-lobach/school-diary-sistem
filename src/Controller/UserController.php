@@ -14,6 +14,7 @@ use Core\Request\Request;
 use Core\Template\Renderer;
 use Form\UserForm;
 use Model\UserModel;
+use Service\SecurityService;
 
 class UserController
 {
@@ -28,15 +29,22 @@ class UserController
     private $renderer;
 
     /**
+     * @var SecurityService
+     */
+    private $securityService;
+
+    /**
      * UserController constructor.
      *
      * @param UserModel $user
-     * @param Renderer  $renderer
+     * @param Renderer $renderer
+     * @param SecurityService $securityService
      */
-    public function __construct(UserModel $user, Renderer $renderer)
+    public function __construct(UserModel $user, Renderer $renderer, SecurityService $securityService)
     {
         $this->userModel = $user;
         $this->renderer = $renderer;
+        $this->securityService = $securityService;
     }
 
     /**
@@ -113,5 +121,24 @@ class UserController
         $this->userModel->delete($id);
 
         return new RedirectResponse('/users');
+    }
+
+    /**
+     * @return Response
+     * @throws \Exception
+     */
+    public function profile(): Response
+    {
+        $path = 'User/my_profile.php';
+
+        return new Response(
+            $this->renderer->render(
+                $path,
+                [
+                    'role' => $this->securityService->getRole(),
+                    'user' => $this->userModel->getUser($this->securityService->getUserId()),
+                ]
+            )
+        );
     }
 }

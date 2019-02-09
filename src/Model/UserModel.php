@@ -168,13 +168,13 @@ class UserModel
      */
     public function getAvailableTeachers(): array
     {
-        $sql = 'SELECT count(id) FROM classes';
-        $countOfClasses = $this->connection->fetch($sql);
+        $sql = 'SELECT id FROM classes';
+        $countOfClasses = count($this->connection->fetchAll($sql));
         $sql = 'SELECT * FROM users WHERE role = :role';
         $teachers = $this->connection->fetchAll($sql, ['role' => RolesEnum::TEACHER]);
         foreach ($teachers as $key => $teacher) {
-            $sql = 'SELECT count(id) FROM enrollments where id=:id';
-            if ($countOfClasses === $this->connection->fetch($sql, ['id' => $teacher['id']])) {
+            $sql = 'SELECT id FROM enrollments WHERE user_id=:user_id';
+            if ($countOfClasses === count($this->connection->fetchAll($sql, ['user_id' => $teacher['id']]))) {
                 unset($teachers[$key]);
             }
         }

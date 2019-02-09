@@ -2,6 +2,7 @@
 <html>
 <head></head>
 <body>
+<?php require __DIR__.'/../Core/menu.php'; ?>
 <h1>Classes</h1>
 <a href="/app.php/classes/create">Create new class</a>
 <table width="100%" cellspacing="0" style="text-align: center">

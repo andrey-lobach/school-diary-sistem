@@ -2,6 +2,7 @@
 <html>
 <head></head>
 <body>
+<?php require __DIR__.'/../Core/menu.php'; ?>
 <h1>Users</h1>
 <a href="/users/create">Create new user</a>
 <table width="100%" cellspacing="0" style="text-align: center">

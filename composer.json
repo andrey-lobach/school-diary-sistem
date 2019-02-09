@@ -1,0 +1,34 @@
+{
+  "name": "andrei/school-diary-sistem",
+  "authors": [
+    {
+      "name": "Andrei Lobach",
+      "email": "andreylobach1997@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "": "src/"
+    },
+    "files": [
+      "app/Kernel.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Test\\": "tests/"
+    }
+  },
+  "config": {
+    "preferred-install": {
+      "*": "dist"
+    },
+    "sort-packages": true
+  },
+  "require": {
+    "php": "^7.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7"
+  }
+}

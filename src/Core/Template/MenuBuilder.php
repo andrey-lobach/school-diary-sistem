@@ -48,6 +48,12 @@ class MenuBuilder
     private function getItems():array
     {
         $menu = [];
-        $role = $this->securityService->getRole(); // TODO foreach пройтись по $this->menu и выбрать те, которые для $role, вернуть массив menu
+        $role = $this->securityService->getRole();
+        foreach ($this->menu as $item){
+            if (in_array($role, $item['roles'], true)) {
+                $menu[]=['url' => $item['url'], 'title' => $item['title']];
+            }
+        }
+        return $menu;
     }
 }

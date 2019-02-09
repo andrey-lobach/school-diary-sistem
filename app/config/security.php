@@ -3,8 +3,9 @@
 use Enum\RolesEnum;
 
 return [
-    '^/users' => [RolesEnum::ADMIN],
-    '^/subjects' => [RolesEnum::ADMIN, RolesEnum::STUDENT, RolesEnum::TEACHER],
+    '^/users'      => [RolesEnum::ADMIN],
+    '^/subjects'   => [RolesEnum::ADMIN],
     '^/enrollment' => [RolesEnum::ADMIN, RolesEnum::TEACHER],
-    '^/logout$' => [RolesEnum::ADMIN, RolesEnum::STUDENT, RolesEnum::TEACHER],
+    '^/classes'    => [RolesEnum::ADMIN],
+    '^/logout$'    => [RolesEnum::ADMIN, RolesEnum::STUDENT, RolesEnum::TEACHER],
 ];

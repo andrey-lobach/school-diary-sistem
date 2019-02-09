@@ -55,7 +55,6 @@ class SecurityService
 
     public function userExist(string $login): bool
     {
-        $result = (bool)$this->userModel->findByLogin($login);
         return (bool)$this->userModel->findByLogin($login);
     }
 
@@ -71,6 +70,9 @@ class SecurityService
         return $hash === $hashPart;
     }
 
+    /**
+     * @return string
+     */
     public function getRole(): string
     {
         if ($this->isAuthorized()) {
@@ -78,4 +80,14 @@ class SecurityService
         }
         return '';
     }
+
+
+    public function getUserId()
+    {
+        if ($this->isAuthorized()) {
+            return $this->session->get('user')['id'];
+        }
+        return '';
+    }
+
 }

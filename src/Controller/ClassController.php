@@ -13,8 +13,9 @@ use Model\ClassModel;
 use Core\Response\RedirectResponse;
 use Core\Response\Response;
 use Core\Request\Request;
-use Core\Response\TemplateResource;
 use Form\ClassForm;
+use Model\UserModel;
+use Service\SecurityService;
 
 class ClassController
 {
@@ -26,15 +27,33 @@ class ClassController
     private $renderer;
 
     /**
+     * @var UserModel
+     */
+    private $userModel;
+
+    /**
+     * @var SecurityService
+     */
+    private $securityService;
+
+    /**
      * ClassController constructor.
      *
-     * @param ClassModel $classModel
-     * @param Renderer   $renderer
+     * @param ClassModel      $classModel
+     * @param UserModel       $userModel
+     * @param Renderer        $renderer
+     * @param SecurityService $securityService
      */
-    public function __construct(ClassModel $classModel, Renderer $renderer)
-    {
+    public function __construct(
+        ClassModel $classModel,
+        UserModel $userModel,
+        Renderer $renderer,
+        SecurityService $securityService
+    ) {
         $this->classModel = $classModel;
         $this->renderer = $renderer;
+        $this->userModel = $userModel;
+        $this->securityService = $securityService;
     }
 
     /**
@@ -113,5 +132,25 @@ class ClassController
         $this->classModel->delete($id);
 
         return new RedirectResponse('/classes');
+    }
+
+    /**
+     * @return Response
+     * @throws \Exception
+     */
+    public function listOfClass(): Response
+    {
+        $path = 'Class/list_of_class.php';
+        $classId = $this->classModel->getStudentClass($this->securityService->getUserId());
+        return new Response(
+            $this->renderer->render(
+                $path,
+                [
+                    'title'     => $this->classModel->getClass($classId)['title'],
+                    'list'      => $this->classModel->getListOfClass($classId),
+                    'userModel' => $this->userModel,
+                ]
+            )
+        );
     }
 }

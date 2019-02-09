@@ -5,6 +5,7 @@
     <title></title>
 </head>
 <body>
+<?php require __DIR__.'/../Core/menu.php'; ?>
 <h1><?php if (count($this->data['availableUsers']) === 0) {echo 'No available users';}
     elseif ($this->data['teacher']) {echo 'Add teacher to class';}
     else {echo 'Add student to class';} ?></h1>

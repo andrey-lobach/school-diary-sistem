@@ -28,7 +28,7 @@ class Renderer
      * @param string      $viewDir
      * @param MenuBuilder $menuBuilder
      */
-    public function __construct(string $viewDir, MenuBuilder $menuBuilder =null) // TODO 2 arg
+    public function __construct(string $viewDir, MenuBuilder $menuBuilder)
     {
         $this->viewDir = $viewDir;
         $this->menuBuilder = $menuBuilder;
@@ -43,7 +43,7 @@ class Renderer
      */
     public function render(string $path, array $params): TemplateResource
     {
-        //$params['menu'] = $this->menuBuilder->createMenu(); //TODO
+        $params['menu'] = $this->menuBuilder->createMenu();
         return new TemplateResource($this->getRealPath($path), $params);
     }
 
@@ -56,7 +56,7 @@ class Renderer
     {
         $realPath = $this->viewDir.'/'.$path;
         if (!file_exists($realPath)) {
-            throw new \Exception(sprintf('Template %s not exists', $path));
+            throw new \RuntimeException(sprintf('Template %s not exists', $path));
         }
         return $realPath;
     }

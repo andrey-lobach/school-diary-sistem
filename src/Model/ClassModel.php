@@ -97,6 +97,19 @@ class ClassModel
     }
 
     /**
+     * @param int $id
+     *
+     * @return array
+     */
+    public function getListOfClass(int $id): array
+    {
+        $sql = 'select user_id from enrollments where (class_id=:class_id) and (role=:role);';
+        $students = $this->connection->fetchAll($sql, ['class_id' => $id, 'role' => RolesEnum::STUDENT]);
+        $teachers = $this->connection->fetchAll($sql, ['class_id' => $id, 'role' => RolesEnum::TEACHER]);
+        return ['students' => $students, 'teachers' => $teachers];
+    }
+
+    /**
      * @return array
      */
     public function getFullList(): array
@@ -104,12 +117,20 @@ class ClassModel
         $list = [];
         $classes = $this->getList();
         foreach ($classes as $class) {
-            $sql = 'select user_id from enrollments where (class_id=:class_id) and (role=:role);';
-            $students = $this->connection->fetchAll($sql, ['class_id' => $class['id'], 'role' => RolesEnum::STUDENT]);
-            $teachers = $this->connection->fetchAll($sql, ['class_id' => $class['id'], 'role' => RolesEnum::TEACHER]);
-            $list[$class['id']] = ['students' => $students, 'teachers' => $teachers];
+            $list[$class['id']] = $this->getListOfClass($class['id']);
         }
 
         return $list;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return mixed
+     */
+    public function getStudentClass(int $id)
+    {
+        $sql = 'select class_id from enrollments where user_id =:user_id;';
+        return $this->connection->fetch($sql, ['user_id' => $id], \PDO::FETCH_COLUMN);
     }
 }

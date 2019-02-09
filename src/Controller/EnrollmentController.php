@@ -17,6 +17,7 @@ use Form\EnrollmentForm;
 use Model\ClassModel;
 use Model\EnrollmentModel;
 use Model\UserModel;
+use Service\SecurityService;
 
 class EnrollmentController
 {
@@ -41,23 +42,31 @@ class EnrollmentController
     private $renderer;
 
     /**
+     * @var SecurityService
+     */
+    private $securityService;
+
+    /**
      * EnrollmentController constructor.
      *
      * @param EnrollmentModel $enrollmentModel
      * @param ClassModel      $classModel
      * @param UserModel       $userModel
      * @param Renderer        $renderer
+     * @param SecurityService $securityService
      */
     public function __construct(
         EnrollmentModel $enrollmentModel,
         ClassModel $classModel,
         UserModel $userModel,
-        Renderer $renderer
+        Renderer $renderer,
+        SecurityService $securityService
     ) {
         $this->enrollmentModel = $enrollmentModel;
         $this->classModel = $classModel;
         $this->userModel = $userModel;
         $this->renderer = $renderer;
+        $this->securityService = $securityService;
     }
 
     /**
@@ -71,13 +80,34 @@ class EnrollmentController
             $this->renderer->render(
                 $path,
                 [
-                    'classes'    => $this->classModel->getList(),
-                    'list'       => $this->classModel->getFullList(),
-                    'userModel'  => $this->userModel,
-                    'classModel' => $this->classModel,
+                    'classes'         => $this->classModel->getList(),
+                    'list'            => $this->classModel->getFullList(),
+                    'userModel'       => $this->userModel,
+                    'classModel'      => $this->classModel,
+                    'enrollmentModel' => $this->enrollmentModel,
+                    'currentUserId'   => $this->securityService->getUserId(),
+                    'currentRole'     => $this->securityService->getRole(),
+                    'roles'           => RolesEnum::class,
                 ]
             )
         );
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return RedirectResponse
+     */
+    public function create(Request $request): RedirectResponse
+    {
+        $userId = $request->get('user_id');
+        $classId = $request->get('class_id');
+        if (!$this->userModel->getUser($userId)) {
+            throw new \RuntimeException('Enrollment or user not exist');
+        }
+        $this->enrollmentModel->create($userId, $classId, RolesEnum::TEACHER);
+
+        return new RedirectResponse('/enrollment');
     }
 
     /**

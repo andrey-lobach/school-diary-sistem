@@ -55,14 +55,13 @@ class SecurityController
      */
     public function login(Request $request)
     {
-        echo json_encode($this->session->get('user'));
         $form = new LoginForm($this->securityService);
         if ($request->getMethod() === Request::POST) {
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->securityService->authorize($form->getData());
 
-                return new RedirectResponse('');
+                return new RedirectResponse('/my_profile');
             }
         }
         $path = 'User/login.php';
@@ -77,6 +76,6 @@ class SecurityController
     {
         $this->securityService->logout();
 
-        return new RedirectResponse('');
+        return new RedirectResponse('/login');
     }
 }

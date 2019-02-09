@@ -5,6 +5,7 @@
     <title></title>
 </head>
 <body>
+<?php require __DIR__.'/../Core/menu.php'; ?>
 <h1>Log in</h1>
 <div class="errors-wrap">
     <?php
