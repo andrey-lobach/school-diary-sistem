@@ -33,12 +33,4 @@ class PasswordHelper
         return $parts[0];
     }
 
-    /**
-     * @param string|null $token
-     * @return bool
-     */
-    public function hasSalt($token): bool
-    {
-        return $token && strpos($token, ':');
-    }
 }

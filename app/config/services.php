@@ -4,7 +4,8 @@ return [
         \Model\ClassModel::class,
         \Model\UserModel::class,
         \Core\Template\Renderer::class,
-        \Service\SecurityService::class
+        \Service\SecurityService::class,
+        \Model\EnrollmentModel::class,
     ],
     \Controller\SecurityController::class   => [
         \Service\SecurityService::class,
@@ -26,13 +27,12 @@ return [
     \Core\DB\Connection::class              => ['%database%'],
     \Core\Template\MenuBuilder::class       => ['%menu%', \Service\SecurityService::class],
     \Core\Template\Renderer::class          => ['%template_dir%', \Core\Template\MenuBuilder::class],
-    \Core\Security\Guardian::class => [\Middleware\GuestMiddleware::class, \Middleware\RoleMiddleware::class],
+    \Core\Security\Guardian::class          => [\Middleware\GuestMiddleware::class, \Middleware\RoleMiddleware::class],
     \Model\UserModel::class                 => [
         \Core\DB\Connection::class,
         \Core\Security\PasswordHelper::class,
         \Core\Security\StringBuilder::class,
     ],
-    \Model\SubjectModel::class              => [\Core\DB\Connection::class],
     \Model\ClassModel::class                => [\Core\DB\Connection::class],
     \Model\EnrollmentModel::class           => [\Core\DB\Connection::class],
     \Service\SecurityService::class         => [

@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
-<head></head>
+<head>
+  <link href="/css/menu_style.css" type="text/css" rel="stylesheet">
+
+</head>
 <body>
 <?php require __DIR__.'/../Core/menu.php'; ?>
 <h1>Users</h1>

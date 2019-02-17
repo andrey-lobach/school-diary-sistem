@@ -142,3 +142,7 @@ class UserController
         );
     }
 }
+//TODO change password for user in my_profile
+//TODO последний админ не может изменить себе роль на студент/учитель, нужно чтобы был хотя бы 1 админ
+//TODO в /classes убрать add student/teacher, оставить только join/leave и добавить кол-во студентов
+//TODO а админу добавить еще кол-во учителей

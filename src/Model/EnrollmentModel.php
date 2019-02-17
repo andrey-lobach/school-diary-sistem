@@ -9,7 +9,6 @@
 namespace Model;
 
 use Core\DB\Connection;
-use Enum\RolesEnum;
 
 class EnrollmentModel
 {
@@ -50,25 +49,6 @@ class EnrollmentModel
     }
 
     /**
-     * @param array $teachers
-     * @param int   $countOfClasses
-     *
-     * @return array
-     */
-    public function getAvailableTeachers(array $teachers, int $countOfClasses): array
-    {
-        foreach ($teachers as $key => $teacher) {
-            $sql = 'SELECT * FROM enrollments WHERE user_id = :user_id';
-            $count = count($this->connection->fetchAll($sql, ['user_id' => $teacher['id']]));
-            if ($countOfClasses === $count) {
-                unset($teachers[$key]);
-            }
-        }
-
-        return $teachers;
-    }
-
-    /**
      * @param int $id
      *
      * @return null|array
@@ -90,26 +70,14 @@ class EnrollmentModel
     }
 
     /**
-     * @param array $userIds
-     * @param int   $classId
+     * @param array  $userIds
+     * @param int    $classId
+     * @param string $role
      */
-    public function addStudents(array $userIds, int $classId)
+    public function addUsers(array $userIds, int $classId, string $role)
     {
         foreach ($userIds as $userId) {
-            $this->create($userId, $classId, RolesEnum::STUDENT);
-        }
-    }
-
-    /**
-     * @param array $userIds
-     * @param array $classIds
-     */
-    public function addTeachers(array $userIds, array $classIds)
-    {
-        foreach ($userIds as $userId) {
-            foreach ($classIds as $classId) {
-                $this->create($userId, $classId, RolesEnum::TEACHER);
-            }
+            $this->create($userId, $classId, $role);
         }
     }
 }

@@ -37,12 +37,19 @@ class Request
     {
         $this->attributes = $attributes;
     }
-    public function getRequest()
+
+    /**
+     * @return array
+     */
+    public function getRequest(): array
     {
         return $this->request;
     }
 
-    public function getPath()
+    /**
+     * @return string
+     */
+    public function getPath(): string
     {
         return $this->path;
     }
@@ -55,6 +62,12 @@ class Request
         return $this->method;
     }
 
+    /**
+     * @param string $key
+     * @param null   $default
+     *
+     * @return mixed|null
+     */
     public function get(string $key, $default = null)
     {
         if (array_key_exists($key, $this->attributes)){

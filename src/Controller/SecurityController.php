@@ -61,7 +61,7 @@ class SecurityController
             if ($form->isValid()) {
                 $this->securityService->authorize($form->getData());
 
-                return new RedirectResponse('/my_profile');
+                return new RedirectResponse('/my-profile');
             }
         }
         $path = 'User/login.php';

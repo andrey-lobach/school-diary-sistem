@@ -39,7 +39,7 @@ class GuestMiddleware implements MiddlewareInterface
             return new RedirectResponse('/login');
         }
         if ($this->securityService->isAuthorized() && ($request->getPath() === '/login' ||  $request->getPath() === '/')) {
-            return new RedirectResponse('/my_profile');
+            return new RedirectResponse('/my-profile');
         }
         return null;
     }

@@ -36,24 +36,9 @@ class EnrollmentForm
      */
     public function handleRequest(Request $request)
     {
-        $classIds = $this->data['classIds'] = $request->get('class_ids', []);
-        if (!$classIds) {
-            $this->violations['classIds'] = 'Choose at least 1 class';
-        }
+        $classId = $this->data['classId'] = $request->get('id');
         $userIds = $this->data['userIds'] = $request->get('user_ids', []);
-        if (!$userIds) {
-            $this->violations['userIds'] = 'Choose at least 1 user';
-        }
-        $hasEnrollments = [];
 
-        foreach ($userIds as $userId) {
-            foreach ($classIds as $classId) {
-                $hasEnrollments[] =$this->enrollmentModel->isEnrollment($userId, $classId);
-            }
-        }
-        if (array_filter($hasEnrollments)) {
-            $this->violations['userIds'] = 'Some users has enrolled already';
-        }
     }
 
     /**

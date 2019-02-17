@@ -164,21 +164,20 @@ class UserModel
     }
 
     /**
+     * @param int $classId
+     *
      * @return array
      */
-    public function getAvailableTeachers(): array
+    public function getAvailableTeachers(int $classId): array
     {
-        $sql = 'SELECT id FROM classes';
-        $countOfClasses = count($this->connection->fetchAll($sql));
-        $sql = 'SELECT * FROM users WHERE role = :role';
-        $teachers = $this->connection->fetchAll($sql, ['role' => RolesEnum::TEACHER]);
-        foreach ($teachers as $key => $teacher) {
-            $sql = 'SELECT id FROM enrollments WHERE user_id=:user_id';
-            if ($countOfClasses === count($this->connection->fetchAll($sql, ['user_id' => $teacher['id']]))) {
-                unset($teachers[$key]);
-            }
-        }
-
-        return $teachers;
+       $sql = 'select * from users where role=:role';
+       $teachers = $this->connection->fetchAll($sql, ['role' => RolesEnum::TEACHER]);
+       foreach ($teachers as $key => $teacher){
+           $sql = 'select id from enrollments where user_id =:user_id and class_id =:class_id';
+           if ($this->connection->fetch($sql, ['user_id' => $teacher['id'], 'class_id' => $classId])){
+               unset($teachers[$key]);
+           }
+       }
+       return $teachers;
     }
 }
