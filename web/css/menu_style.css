@@ -1,9 +1,32 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 nav {
-    border: 1px solid red;
+    height: 50px;
+    background: -webkit-linear-gradient(top, rgba(11,24,68,1) 0%,rgba(38,50,82,1) 100%);
 }
+.menu {
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-around;
+    height: 100%;
+    margin: 0 auto;
 
+}
+.menu_item {
+    display: flex;
+    align-items: flex-end;
+    text-decoration: none;
+    color: rgb(84, 92, 119);
+    font-weight: bold;
+    padding-bottom: 5px;
+    border-bottom: 4px solid transparent;
+}
+.menu_item:hover {
+    border-bottom: 4px solid rgb(0,218,118);
+    color: rgb(255, 255, 255);
+    transition: 0.3s;
+}

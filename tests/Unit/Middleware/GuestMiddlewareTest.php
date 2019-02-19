@@ -34,16 +34,43 @@ class GuestMiddlewareTest extends TestCase
             ->willReturn($isAuthorized);
         $middleware = new GuestMiddleware($security);
         $this->assertInstanceOf(RedirectResponse::class, $middleware->handle($route, $request));
-        //$this->assertNull() TODO
+    }
+
+    /**
+     * @dataProvider getDataForNull
+     *
+     * @param bool    $isAuthorized
+     * @param Route   $route
+     * @param Request $request
+     */
+    public function testReturnNull(bool $isAuthorized, Route $route, Request $request)
+    {
+        /** @var SecurityService|MockObject $security */
+        $security = $this->createMock(SecurityService::class);
+        $security
+            ->method('isAuthorized')
+            ->willReturn($isAuthorized);
+        $middleware = new GuestMiddleware($security);
+        $this->assertNull($middleware->handle($route, $request));
     }
 
     public function getDataForRedirect(): array
     {
         $data = [];
         $route = new Route('', '', '');
-        $request = new Request('/login', '', []);
-        //$data[] = [false, $route, $request];
-        $data[] = [true, $route, $request];
+        $data[] = [true, $route, new Request('/login', '', [])];
+        $data[] = [false, $route, new Request('/', '', [])];
+        $data[] = [false, $route, new Request('/users', '', [])];
+
+        return $data;
+    }
+
+    public function getDataForNull(): array
+    {
+        $data = [];
+        $route = new Route('', '', '');
+        $data[] = [true, $route,new Request('/my-profile', '', [])];
+        $data[] = [true, $route, new Request('/classes', '', [])];
 
         return $data;
     }

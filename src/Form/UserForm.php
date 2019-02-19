@@ -5,21 +5,31 @@ namespace Form;
 use Core\Request\Request;
 use Enum\RolesEnum;
 use Model\UserModel;
-
+use Service\SecurityService;
 
 class UserForm
 {
-
     private $data;
+
     private $violations = [];
+
     private $userModel;
 
+    /**
+     * UserForm constructor.
+     *
+     * @param UserModel $userModel
+     * @param array     $data
+     */
     public function __construct(UserModel $userModel, array $data = [])
     {
         $this->userModel = $userModel;
         $this->data = $data;
     }
 
+    /**
+     * @param Request $request
+     */
     public function handleRequest(Request $request)
     {
         $this->data['login'] = $request->get('login');
@@ -46,7 +56,7 @@ class UserForm
         if ($firstNameLen < 3 || $firstNameLen > 50) {
             $this->violations['first_name'] = 'The length of the first name must not be shorter than 3 and longer than 50 characters';
         }
-        if ($lastNameLen < 3 ||  $lastNameLen > 50) {
+        if ($lastNameLen < 3 || $lastNameLen > 50) {
             $this->violations['last_name'] = 'The length of the last name must not be shorter than 3 and longer than 50 characters';
         }
         if (!$this->data['role']) {
@@ -54,6 +64,13 @@ class UserForm
         } elseif (array_diff($this->data['role'], RolesEnum::getAll())) {
             $this->violations['role'] = 'Invalid roles';
         }
+
+        if ($this->userModel->getUser($id)['role'] === RolesEnum::ADMIN &&
+            $this->data['role'] !== RolesEnum::ADMIN &&
+            (int)$this->userModel->getCountOfAdmins() === 1) {
+            $this->violations['admin'] = 'At least must be 1 admin';
+        }
+
     }
 
     /**
@@ -63,6 +80,7 @@ class UserForm
     {
         $data = $this->data;
         unset($data['plain_password_confirm']);
+
         return $data;
     }
 
@@ -74,11 +92,8 @@ class UserForm
         return $this->violations;
     }
 
-
     public function isValid()
     {
         return count($this->violations) === 0;
     }
-
-
 }

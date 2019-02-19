@@ -2,12 +2,14 @@
 <html>
 <head>
   <link href="/css/menu_style.css" type="text/css" rel="stylesheet">
-
+  <link href="/css/footer_style.css" type="text/css" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 </head>
 <body>
 <?php require __DIR__.'/../Core/menu.php'; ?>
 <h1>Users</h1>
 <a href="/users/create">Create new user</a>
+<?php require __DIR__.'/../Core/messages.php'; ?>
 <table width="100%" cellspacing="0" style="text-align: center">
     <thead>
     <tr>
@@ -33,4 +35,5 @@
     <?php } ?>
     </tbody>
 </table>
+<?php require __DIR__.'/../Core/footer.html'; ?>
 </body>

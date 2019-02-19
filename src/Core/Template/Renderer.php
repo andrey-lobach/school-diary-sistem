@@ -8,6 +8,7 @@
 
 namespace Core\Template;
 
+use Core\MessageBag;
 use Core\Response\TemplateResource;
 
 class Renderer
@@ -23,15 +24,22 @@ class Renderer
     private $menuBuilder;
 
     /**
+     * @var MessageBag
+     */
+    private $messageBag;
+
+    /**
      * Renderer constructor.
      *
      * @param string      $viewDir
      * @param MenuBuilder $menuBuilder
+     * @param MessageBag  $messageBag
      */
-    public function __construct(string $viewDir, MenuBuilder $menuBuilder)
+    public function __construct(string $viewDir, MenuBuilder $menuBuilder, MessageBag $messageBag)
     {
         $this->viewDir = $viewDir;
         $this->menuBuilder = $menuBuilder;
+        $this->messageBag = $messageBag;
     }
 
     /**
@@ -44,6 +52,8 @@ class Renderer
     public function render(string $path, array $params): TemplateResource
     {
         $params['menu'] = $this->menuBuilder->createMenu();
+        $params['flash'] = ['errors' => $this->messageBag->pullErrors(), 'messages' => $this->messageBag->pullMessages()];
+
         return new TemplateResource($this->getRealPath($path), $params);
     }
 
@@ -58,6 +68,7 @@ class Renderer
         if (!file_exists($realPath)) {
             throw new \RuntimeException(sprintf('Template %s not exists', $path));
         }
+
         return $realPath;
     }
 }

@@ -9,6 +9,7 @@
 namespace Model;
 
 use Core\DB\Connection;
+use Enum\RolesEnum;
 
 class EnrollmentModel
 {
@@ -79,5 +80,30 @@ class EnrollmentModel
         foreach ($userIds as $userId) {
             $this->create($userId, $classId, $role);
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function countOfUsers(): array
+    {
+        $sql = 'SELECT id FROM classes';
+        $classes = $this->connection->fetchAll($sql);
+        $countOfUsers = [];
+        foreach ($classes as $class) {
+            $sql = 'SELECT count(user_id) FROM enrollments WHERE role=:role AND class_id=:class_id;';
+            $countOfUsers[$class['id']] = [
+                'students' => $this->connection->fetch(
+                    $sql,
+                    ['class_id' => $class['id'], 'role' => RolesEnum::STUDENT]
+                )['count(user_id)'],
+                'teachers' => $this->connection->fetch(
+                    $sql,
+                    ['class_id' => $class['id'], 'role' => RolesEnum::TEACHER]
+                )['count(user_id)'],
+            ];
+        }
+
+        return $countOfUsers;
     }
 }

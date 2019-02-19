@@ -8,7 +8,6 @@
 
 namespace Core\Response;
 
-
 class TemplateResource implements ResourceInterface
 {
     /**
@@ -19,13 +18,11 @@ class TemplateResource implements ResourceInterface
      * @var array
      */
     private $data;
-
     public function __construct(string $template, array $data = [])
     {
         $this->template = $template;
         $this->data = $data;
     }
-
     public function getContent()
     {
         ob_start();
@@ -34,5 +31,4 @@ class TemplateResource implements ResourceInterface
         ob_end_clean();
         return $content;
     }
-
 }

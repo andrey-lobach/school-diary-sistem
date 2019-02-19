@@ -5,6 +5,7 @@
  * Date: 12.12.18
  * Time: 16.55
  */
+
 namespace Core\HTTP;
 
 final class Session
@@ -24,6 +25,7 @@ final class Session
             self::$instance = new self();
             self::$instance->start();
         }
+
         return self::$instance;
     }
 
@@ -47,15 +49,17 @@ final class Session
         $_SESSION[$key] = $value;
     }
 
-    public function get(string $key)
+    public function get(string $key, $default = null)
     {
         $this->checkSessionStarted();
-        return $_SESSION[$key];
+
+        return $_SESSION[$key] ?? $default;
     }
 
     public function has(string $key): bool
     {
         $this->checkSessionStarted();
+
         return isset($_SESSION[$key]);
     }
 

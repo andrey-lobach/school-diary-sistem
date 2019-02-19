@@ -50,7 +50,7 @@ class RoleMiddleware implements MiddlewareInterface
         return null;
     }
 
-    public function isAuthenticated(string $path, string $role)
+    private function isAuthenticated(string $path, string $role)
     {
         foreach ($this->routeSecurity as $pattern => $routeRoles){
             if (preg_match(sprintf('#%s#', $pattern), $path)) {

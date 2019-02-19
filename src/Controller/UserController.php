@@ -8,10 +8,15 @@
 
 namespace Controller;
 
+use Core\MessageBag;
 use Core\Response\RedirectResponse;
 use Core\Response\Response;
 use Core\Request\Request;
+use Core\Security\PasswordHelper;
+use Core\Security\StringBuilder;
 use Core\Template\Renderer;
+use Enum\RolesEnum;
+use Form\ChangePasswordForm;
 use Form\UserForm;
 use Model\UserModel;
 use Service\SecurityService;
@@ -34,17 +39,28 @@ class UserController
     private $securityService;
 
     /**
+     * @var MessageBag
+     */
+    private $messageBag;
+
+    /**
      * UserController constructor.
      *
-     * @param UserModel $user
-     * @param Renderer $renderer
+     * @param UserModel       $user
+     * @param Renderer        $renderer
      * @param SecurityService $securityService
+     * @param MessageBag      $messageBag
      */
-    public function __construct(UserModel $user, Renderer $renderer, SecurityService $securityService)
-    {
+    public function __construct(
+        UserModel $user,
+        Renderer $renderer,
+        SecurityService $securityService,
+        MessageBag $messageBag
+    ) {
         $this->userModel = $user;
         $this->renderer = $renderer;
         $this->securityService = $securityService;
+        $this->messageBag = $messageBag;
     }
 
     /**
@@ -97,7 +113,7 @@ class UserController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->userModel->edit($form->getData(), $id);
-
+                $this->messageBag->addMessage('User updated');
                 return new RedirectResponse('/users');
             }
         }
@@ -118,17 +134,34 @@ class UserController
         if (!$this->userModel->getUser($id)) {
             throw new \RuntimeException('User not exist');
         }
-        $this->userModel->delete($id);
+        try {
+            $this->userModel->delete($id);
+        } catch (\LogicException $exception) {
+            $this->messageBag->addError($exception->getMessage());
+        }
+
 
         return new RedirectResponse('/users');
     }
 
     /**
+     * @param Request $request
+     *
      * @return Response
      * @throws \Exception
      */
-    public function profile(): Response
+    public function profile(Request $request): Response
     {
+        $form = new ChangePasswordForm($this->securityService);
+        if ($request->getMethod() === Request::POST) {
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+                $this->userModel->changePassword($this->securityService->getUserId(), $form->getData()['newPassword']);
+                //TODO вывести сообщение об успешной смене пароля или логаута достаточно?
+                //return new RedirectResponse('/logout');
+
+            }
+        }
         $path = 'User/my_profile.php';
 
         return new Response(
@@ -137,12 +170,9 @@ class UserController
                 [
                     'role' => $this->securityService->getRole(),
                     'user' => $this->userModel->getUser($this->securityService->getUserId()),
+                    'form' => $form,
                 ]
             )
         );
     }
 }
-//TODO change password for user in my_profile
-//TODO последний админ не может изменить себе роль на студент/учитель, нужно чтобы был хотя бы 1 админ
-//TODO в /classes убрать add student/teacher, оставить только join/leave и добавить кол-во студентов
-//TODO а админу добавить еще кол-во учителей

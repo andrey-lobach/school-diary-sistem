@@ -70,47 +70,6 @@ class EnrollmentController
     }
 
     /**
-     * @return Response
-     */
-    public function list(): Response
-    {
-        $path = 'Enrollment/list.php';
-
-        return new Response(
-            $this->renderer->render(
-                $path,
-                [
-                    'classes'         => $this->classModel->getList(),
-                    'list'            => $this->classModel->getFullList(),
-                    'userModel'       => $this->userModel,
-                    'classModel'      => $this->classModel,
-                    'enrollmentModel' => $this->enrollmentModel,
-                    'currentUserId'   => $this->securityService->getUserId(),
-                    'currentRole'     => $this->securityService->getRole(),
-                    'roles'           => RolesEnum::class,
-                ]
-            )
-        );
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return RedirectResponse
-     */
-    public function create(Request $request): RedirectResponse
-    {
-        $userId = $request->get('user_id');
-        $classId = $request->get('class_id');
-        if (!$this->userModel->getUser($userId)) {
-            throw new \RuntimeException('Enrollment or user not exist');
-        }
-        $this->enrollmentModel->create($userId, $classId, RolesEnum::TEACHER);
-
-        return new RedirectResponse('/classes');
-    }
-
-    /**
      * @param Request $request
      *
      * @return Response|RedirectResponse
@@ -127,7 +86,7 @@ class EnrollmentController
                     RolesEnum::STUDENT
                 );
 
-                return new RedirectResponse('/classes');
+                return new RedirectResponse('/classes/'.$classId);
             }
         }
         $path = 'Enrollment/create.php';
@@ -138,8 +97,8 @@ class EnrollmentController
                 [
                     'form'           => $form,
                     'availableUsers' => $this->userModel->getStudentsWithoutEnrollment(),
-                    'classes'        => $this->classModel->getList(),
                     'student'        => true,
+                    'class'          => $this->classModel->getClass($request->get('id')),
                 ]
             )
         );
@@ -163,18 +122,19 @@ class EnrollmentController
                     RolesEnum::TEACHER
                 );
 
-                return new RedirectResponse('/classes');
+                return new RedirectResponse('/classes/'.$form->getData()['classId']);
             }
         }
         $path = 'Enrollment/create.php';
+
         return new Response(
             $this->renderer->render(
                 $path,
                 [
                     'form'           => $form,
                     'availableUsers' => $this->userModel->getAvailableTeachers($request->get('id')),
-                    'classes'        => $this->classModel->getList(),
                     'student'        => true,
+                    'class'          => $this->classModel->getClass($request->get('id')),
                 ]
             )
         );
@@ -193,14 +153,18 @@ class EnrollmentController
         if (!$this->userModel->getUser($userId)) {
             throw new \RuntimeException('Enrollment or user not exist');
         }
-        $this->enrollmentModel->delete($userId, $classId);
         if ($this->securityService->getRole() === RolesEnum::ADMIN) {
+            $this->enrollmentModel->delete($userId, $classId);
             return new RedirectResponse('/classes/'.$classId);
         }
         if ($this->userModel->getUser($userId)['role'] === RolesEnum::TEACHER) {
+            $this->enrollmentModel->re($userId, $classId);
             return new RedirectResponse('/classes');
         }
 
         return new RedirectResponse('/classes/'.$classId);
     }
+
+
 }
+//TODO сделать методы join/leave class

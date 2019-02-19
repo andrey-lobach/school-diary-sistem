@@ -5,7 +5,9 @@
  * Date: 12.12.18
  * Time: 17.23
  */
+
 namespace Service;
+
 use Core\HTTP\Session;
 use Model\UserModel;
 
@@ -17,10 +19,12 @@ class SecurityService
      * @var Session
      */
     private $session;
+
     /**
      * @var UserModel
      */
     private $userModel;
+
     /**
      * @var PasswordHelper
      */
@@ -50,23 +54,25 @@ class SecurityService
         }
         $user = $this->userModel->findByLogin($credentials['login']);
         $this->session->set('user', $user);
+
         return true;
     }
 
     public function userExist(string $login): bool
     {
-        return (bool)$this->userModel->findByLogin($login);
+        return (bool) $this->userModel->findByLogin($login);
     }
 
     public function isPasswordValid(string $login, string $password): bool
     {
         $user = $this->userModel->findByLogin($login);
-        if (!$user){
+        if (!$user) {
             return false;
         }
         $salt = $this->passwordHelper->getSaltPart($user['password']);
         $hashPart = $this->passwordHelper->getHashPart($user['password']);
         $hash = $this->passwordHelper->getHash($password, $salt);
+
         return $hash === $hashPart;
     }
 
@@ -78,16 +84,31 @@ class SecurityService
         if ($this->isAuthorized()) {
             return $this->session->get('user')['role'];
         }
+
         return '';
     }
 
-
-    public function getUserId()
+    /**
+     * @return string
+     */
+    public function getUserId(): string
     {
         if ($this->isAuthorized()) {
             return $this->session->get('user')['id'];
         }
+
         return '';
     }
 
+    /**
+     * @return mixed|array
+     */
+    public function getUser()
+    {
+        if ($this->isAuthorized()) {
+            return $this->session->get('user');
+        }
+
+        return '';
+    }
 }

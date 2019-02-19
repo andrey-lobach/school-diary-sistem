@@ -78,6 +78,11 @@ class UserModel
      */
     public function delete(int $id)
     {
+        if ($this->getUser($id)['role'] === RolesEnum::ADMIN
+            && (int) $this->getCountOfAdmins() === 1
+        ) {
+            throw new \LogicException('Can not delete last admin');
+        }
         $sql = 'DELETE FROM users WHERE id=:id';
         $this->connection->query($sql, ['id' => $id]);
     }
@@ -127,6 +132,14 @@ class UserModel
         return $user ?: null;
     }
 
+    public function changePassword(int $userId, string $plainPassword)
+    {
+        $salt = $this->stringBuilder->build(5);
+        $hash = $this->passwordHelper->getHash($plainPassword, $salt);
+        $sql = 'UPDATE users SET password=:password WHERE id=:id;';
+        $this->connection->query($sql, ['id' => $userId, 'password' => $salt.':'.$hash]);
+    }
+
     /**
      * @param array $user
      *
@@ -170,14 +183,22 @@ class UserModel
      */
     public function getAvailableTeachers(int $classId): array
     {
-       $sql = 'select * from users where role=:role';
-       $teachers = $this->connection->fetchAll($sql, ['role' => RolesEnum::TEACHER]);
-       foreach ($teachers as $key => $teacher){
-           $sql = 'select id from enrollments where user_id =:user_id and class_id =:class_id';
-           if ($this->connection->fetch($sql, ['user_id' => $teacher['id'], 'class_id' => $classId])){
-               unset($teachers[$key]);
-           }
-       }
-       return $teachers;
+        $sql = 'SELECT * FROM users WHERE role=:role';
+        $teachers = $this->connection->fetchAll($sql, ['role' => RolesEnum::TEACHER]);
+        foreach ($teachers as $key => $teacher) {
+            $sql = 'SELECT id FROM enrollments WHERE user_id =:user_id AND class_id =:class_id';
+            if ($this->connection->fetch($sql, ['user_id' => $teacher['id'], 'class_id' => $classId])) {
+                unset($teachers[$key]);
+            }
+        }
+
+        return $teachers;
+    }
+
+    public function getCountOfAdmins()
+    {
+        $sql = 'SELECT count(id) FROM users WHERE role=:role';
+
+        return $this->connection->fetch($sql, ['role' => RolesEnum::ADMIN])['count(id)'];
     }
 }

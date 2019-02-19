@@ -1,0 +1,20 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.errors-wrap {
+    background-color: rgb(245,206,206);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+.errors-wrap p {
+    color:rgb(155,30,38);
+    font-weight: bold;
+}
+.errors-wrap li{
+    color:rgb(155,30,38);
+}

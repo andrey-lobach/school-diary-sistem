@@ -16,6 +16,7 @@ return [
         \Model\UserModel::class,
         \Core\Template\Renderer::class,
         \Service\SecurityService::class,
+        \Core\MessageBag::class,
     ],
     \Controller\EnrollmentController::class => [
         \Model\EnrollmentModel::class,
@@ -26,7 +27,12 @@ return [
     ],
     \Core\DB\Connection::class              => ['%database%'],
     \Core\Template\MenuBuilder::class       => ['%menu%', \Service\SecurityService::class],
-    \Core\Template\Renderer::class          => ['%template_dir%', \Core\Template\MenuBuilder::class],
+    \Core\MessageBag::class                 => [\Core\HTTP\SessionProvider::class],
+    \Core\Template\Renderer::class          => [
+        '%template_dir%',
+        \Core\Template\MenuBuilder::class,
+        \Core\MessageBag::class,
+    ],
     \Core\Security\Guardian::class          => [\Middleware\GuestMiddleware::class, \Middleware\RoleMiddleware::class],
     \Model\UserModel::class                 => [
         \Core\DB\Connection::class,

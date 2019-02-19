@@ -9,6 +9,7 @@
 namespace Controller;
 
 use Core\Template\Renderer;
+use Enum\RolesEnum;
 use Model\ClassModel;
 use Core\Response\RedirectResponse;
 use Core\Response\Response;
@@ -82,6 +83,7 @@ class ClassController
                     'role'            => $this->securityService->getRole(),
                     'enrollmentModel' => $this->enrollmentModel,
                     'currentUserId'   => $this->securityService->getUserId(),
+                    'countOfUsers' => $this->enrollmentModel->countOfUsers(),
                 ]
             )
         );
@@ -181,5 +183,31 @@ class ClassController
                 ]
             )
         );
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return RedirectResponse
+     */
+    public function joinClass(Request $request): RedirectResponse
+    {
+        $classId = $request->get('id');
+        $teacherId = $this->securityService->getUserId();
+        $this->enrollmentModel->create($teacherId, $classId, RolesEnum::TEACHER);
+        return new RedirectResponse('/classes');
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return RedirectResponse
+     */
+    public function leaveClass(Request $request): RedirectResponse
+    {
+        $classId = $request->get('id');
+        $teacherId = $this->securityService->getUserId();
+        $this->enrollmentModel->delete($teacherId, $classId);
+        return new RedirectResponse('/classes');
     }
 }
