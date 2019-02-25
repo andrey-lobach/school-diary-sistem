@@ -1,14 +1,13 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+
 footer {
     height: 50px;
     background: -webkit-linear-gradient(top, rgba(38,50,82,1) 100%, rgba(11,24,68,1) 0%);
     display: flex;
     justify-content: center;
     align-items: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
 }
 .footer-text {
     color: rgb(84, 92, 119);

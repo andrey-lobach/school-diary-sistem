@@ -1,9 +1,9 @@
+<?php
+/** @var \Core\Form\FormInterface $form */
+$form = $this->data['form'];
+if (!$form->isValid()) {
+?>
 <div class="errors-wrap">
-  <?php
-    /** @var \Core\Form\FormInterface $form */
-    $form = $this->data['form'];
-    if (!$form->isValid()) {
-    ?>
   <p>There was an error with your submission!</p>
   <ul>
     <?php
@@ -12,5 +12,6 @@
     <?php } ?>
   </ul>
   <p>Please retry.</p>
-  <?php } ?>
+
 </div>
+<?php } ?>

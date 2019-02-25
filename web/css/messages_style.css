@@ -1,0 +1,22 @@
+
+.messages-errors {
+    background-color: rgb(245,206,206);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    color:rgb(155,30,38);
+    font-weight: bold;
+}
+
+.messages-messages {
+    background-color: rgb(32,127,65);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    color:rgb(255,255,255);
+    font-weight: bold;
+}

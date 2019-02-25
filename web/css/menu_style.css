@@ -20,13 +20,14 @@ nav {
     display: flex;
     align-items: flex-end;
     text-decoration: none;
-    color: rgb(84, 92, 119);
+    color: rgb(200,200,200);
     font-weight: bold;
     padding-bottom: 5px;
     border-bottom: 4px solid transparent;
 }
 .menu_item:hover {
-    border-bottom: 4px solid rgb(0,218,118);
+    border-bottom: 4px solid #A52A2A;
     color: rgb(255, 255, 255);
     transition: 0.3s;
+    cursor: pointer;
 }

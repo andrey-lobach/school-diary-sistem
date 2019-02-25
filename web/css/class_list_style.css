@@ -1,0 +1,113 @@
+body {
+    background-color: rgb(230,230,230);
+}
+.wrap {
+    max-width: 1200px;
+    margin: 20px auto;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 20px;
+    position: relative;
+}
+
+.list {
+    width: 100%;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.row {
+    display: flex;
+    background-color: rgb(255, 255, 255);
+    border-radius: 20px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+    height: 30px;
+    width: 70%;
+    justify-content: space-around;
+    align-items: center;
+
+}
+.row div {
+    width: 33%;
+    margin: 0 auto;
+}
+.head {
+    background-color: rgba(11,24,68,1);
+    color: white;
+}
+.buttons {
+    display: flex;
+    justify-content: space-around;
+}
+.title {
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    background-color: white;
+    width: 15%;
+    height: 150px;
+    position: absolute;
+    left: -20px;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+.title a {
+    text-decoration: none;
+    width: 90%;
+    height: 30px;
+    background-color: rgb(238, 238, 238);
+    color:rgb(72,72,72);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+h1 {
+    color: #A52A2A;
+}
+i {
+    margin-right: 5px;
+}
+.buttons {
+    display: flex;
+    justify-content: space-around;
+}
+.edit_button, .delete_button {
+    text-decoration: none;
+    width: 40%;
+    height: 20px;
+    background-color: rgb(238, 238, 238);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color:rgb(72,72,72);
+    border-radius: 20px;
+}
+
+.edit_button:hover, .title a:hover, .class_link:hover {
+    background-color: rgba(11,24,68,1);
+    color: white;
+}
+
+.delete_button:hover {
+    background-color: #A52A2A;
+    color: white;
+}
+.class_link {
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    width: 40%;
+    height: 20px;
+    background-color: rgb(238, 238, 238);
+    color:rgb(72,72,72);
+    border-radius: 20px;
+}

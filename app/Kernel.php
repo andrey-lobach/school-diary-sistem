@@ -1,5 +1,6 @@
 <?php
 
+use Core\HTTP\Exception\RequestException;
 use Core\Request\Request;
 use Core\Response\Response;
 use Core\Router\Route;
@@ -22,12 +23,17 @@ class Kernel
         return $this->connection;
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Route
+     */
     private function getRoute(Request $request): Route
     {
         require_once __DIR__.'/config/routes.php';
         $route = Router::findRoute($request);
         if ($route === null) {
-            throw new Exception('route not found');
+            throw new RequestException('Route not found', 404);
         }
 
         return $route;

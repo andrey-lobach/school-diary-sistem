@@ -6,6 +6,7 @@ return [
         \Core\Template\Renderer::class,
         \Service\SecurityService::class,
         \Model\EnrollmentModel::class,
+        \Core\MessageBag::class,
     ],
     \Controller\SecurityController::class   => [
         \Service\SecurityService::class,
@@ -24,6 +25,7 @@ return [
         \Model\UserModel::class,
         \Core\Template\Renderer::class,
         \Service\SecurityService::class,
+        \Core\MessageBag::class,
     ],
     \Core\DB\Connection::class              => ['%database%'],
     \Core\Template\MenuBuilder::class       => ['%menu%', \Service\SecurityService::class],

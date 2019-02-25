@@ -8,6 +8,7 @@
 
 namespace Controller;
 
+use Core\MessageBag;
 use Core\Request\Request;
 use Core\Response\RedirectResponse;
 use Core\Response\Response;
@@ -47,6 +48,11 @@ class EnrollmentController
     private $securityService;
 
     /**
+     * @var MessageBag
+     */
+    private $messageBag;
+
+    /**
      * EnrollmentController constructor.
      *
      * @param EnrollmentModel $enrollmentModel
@@ -54,19 +60,22 @@ class EnrollmentController
      * @param UserModel       $userModel
      * @param Renderer        $renderer
      * @param SecurityService $securityService
+     * @param MessageBag      $messageBag
      */
     public function __construct(
         EnrollmentModel $enrollmentModel,
         ClassModel $classModel,
         UserModel $userModel,
         Renderer $renderer,
-        SecurityService $securityService
+        SecurityService $securityService,
+        MessageBag $messageBag
     ) {
         $this->enrollmentModel = $enrollmentModel;
         $this->classModel = $classModel;
         $this->userModel = $userModel;
         $this->renderer = $renderer;
         $this->securityService = $securityService;
+        $this->messageBag = $messageBag;
     }
 
     /**
@@ -85,7 +94,7 @@ class EnrollmentController
                     $classId = $form->getData()['classId'],
                     RolesEnum::STUDENT
                 );
-
+                $this->messageBag->addMessage('Students added');
                 return new RedirectResponse('/classes/'.$classId);
             }
         }
@@ -121,6 +130,7 @@ class EnrollmentController
                     $form->getData()['classId'],
                     RolesEnum::TEACHER
                 );
+                $this->messageBag->addMessage('Teachers added');
 
                 return new RedirectResponse('/classes/'.$form->getData()['classId']);
             }
@@ -153,6 +163,11 @@ class EnrollmentController
         if (!$this->userModel->getUser($userId)) {
             throw new \RuntimeException('Enrollment or user not exist');
         }
+        if ($this->userModel->getUser($userId)['role'] === RolesEnum::TEACHER){
+            $this->messageBag->addMessage('Teacher removed');
+        } else {
+            $this->messageBag->addMessage('Student removed');
+        }
         if ($this->securityService->getRole() === RolesEnum::ADMIN) {
             $this->enrollmentModel->delete($userId, $classId);
             return new RedirectResponse('/classes/'.$classId);
@@ -167,4 +182,3 @@ class EnrollmentController
 
 
 }
-//TODO сделать методы join/leave class

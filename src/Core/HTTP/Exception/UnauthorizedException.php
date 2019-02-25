@@ -8,13 +8,13 @@
 
 namespace Core\HTTP\Exception;
 
-
+use Core\Response\Response;
 use Throwable;
 
 class UnauthorizedException extends RequestException
 {
-public function __construct(string $message = 'Unauthorized', int $code = 403, Throwable $previous = null)
-{
-    parent::__construct($message, $code, $previous);
-}
+    public function __construct(string $message = 'Unauthorized', int $code = 403, Throwable $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
 }

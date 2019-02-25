@@ -8,6 +8,7 @@
 
 namespace Controller;
 
+use Core\MessageBag;
 use Core\Template\Renderer;
 use Enum\RolesEnum;
 use Model\ClassModel;
@@ -44,6 +45,11 @@ class ClassController
     private $enrollmentModel;
 
     /**
+     * @var MessageBag
+     */
+    private $messageBag;
+
+    /**
      * ClassController constructor.
      *
      * @param ClassModel      $classModel
@@ -51,19 +57,22 @@ class ClassController
      * @param Renderer        $renderer
      * @param SecurityService $securityService
      * @param EnrollmentModel $enrollmentModel
+     * @param MessageBag      $messageBag
      */
     public function __construct(
         ClassModel $classModel,
         UserModel $userModel,
         Renderer $renderer,
         SecurityService $securityService,
-        EnrollmentModel $enrollmentModel
+        EnrollmentModel $enrollmentModel,
+        MessageBag $messageBag
     ) {
         $this->classModel = $classModel;
         $this->renderer = $renderer;
         $this->userModel = $userModel;
         $this->securityService = $securityService;
         $this->enrollmentModel = $enrollmentModel;
+        $this->messageBag = $messageBag;
     }
 
     /**
@@ -83,7 +92,7 @@ class ClassController
                     'role'            => $this->securityService->getRole(),
                     'enrollmentModel' => $this->enrollmentModel,
                     'currentUserId'   => $this->securityService->getUserId(),
-                    'countOfUsers' => $this->enrollmentModel->countOfUsers(),
+                    'countOfUsers'    => $this->enrollmentModel->countOfUsers(),
                 ]
             )
         );
@@ -102,6 +111,7 @@ class ClassController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->classModel->create($form->getData());
+                $this->messageBag->addMessage('Class created');
 
                 return new RedirectResponse('/classes');
             }
@@ -129,6 +139,7 @@ class ClassController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->classModel->edit($form->getData(), $id);
+                $this->messageBag->addMessage('Class updated');
 
                 return new RedirectResponse('/classes');
             }
@@ -151,6 +162,7 @@ class ClassController
             throw new \RuntimeException('Class not exist');
         }
         $this->classModel->delete($id);
+        $this->messageBag->addMessage('Class deleted');
 
         return new RedirectResponse('/classes');
     }
@@ -195,6 +207,8 @@ class ClassController
         $classId = $request->get('id');
         $teacherId = $this->securityService->getUserId();
         $this->enrollmentModel->create($teacherId, $classId, RolesEnum::TEACHER);
+        $this->messageBag->addMessage(sprintf('You are joined to %s class', $this->classModel->getClass($classId)['title']));
+
         return new RedirectResponse('/classes');
     }
 
@@ -208,6 +222,8 @@ class ClassController
         $classId = $request->get('id');
         $teacherId = $this->securityService->getUserId();
         $this->enrollmentModel->delete($teacherId, $classId);
+        $this->messageBag->addMessage(sprintf('You are leaved %s class', $this->classModel->getClass($classId)['title']));
+
         return new RedirectResponse('/classes');
     }
 }

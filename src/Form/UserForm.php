@@ -53,24 +53,30 @@ class UserForm
         }
         $firstNameLen = strlen($firstName);
         $lastNameLen = strlen($lastName);
-        if ($firstNameLen < 3 || $firstNameLen > 50) {
-            $this->violations['first_name'] = 'The length of the first name must not be shorter than 3 and longer than 50 characters';
+        if ($firstNameLen < 3) {
+            $this->violations['first_name'] = 'First name is too short';
         }
-        if ($lastNameLen < 3 || $lastNameLen > 50) {
-            $this->violations['last_name'] = 'The length of the last name must not be shorter than 3 and longer than 50 characters';
+        if ($lastNameLen < 3) {
+            $this->violations['last_name'] = 'Last name is too short';
+        }
+        if ($firstNameLen > 50) {
+            $this->violations['first_name'] = 'First name is too long';
+        }
+        if ($lastNameLen > 50) {
+            $this->violations['last_name'] = 'Last name is too long';
         }
         if (!$this->data['role']) {
             $this->violations['role'] = 'At least, one role is required';
         } elseif (array_diff($this->data['role'], RolesEnum::getAll())) {
             $this->violations['role'] = 'Invalid roles';
         }
-
-        if ($this->userModel->getUser($id)['role'] === RolesEnum::ADMIN &&
-            $this->data['role'] !== RolesEnum::ADMIN &&
-            (int)$this->userModel->getCountOfAdmins() === 1) {
-            $this->violations['admin'] = 'At least must be 1 admin';
+        if ($id) {
+            if ($this->userModel->getUser($id)['role'] === RolesEnum::ADMIN &&
+                $this->data['role'] !== RolesEnum::ADMIN &&
+                (int) $this->userModel->getCountOfAdmins() === 1) {
+                $this->violations['admin'] = 'At least must be 1 admin';
+            }
         }
-
     }
 
     /**

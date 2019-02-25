@@ -87,6 +87,7 @@ class UserController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->userModel->create($form->getData());
+                $this->messageBag->addMessage('User created');
 
                 return new RedirectResponse('/users');
             }
@@ -114,6 +115,7 @@ class UserController
             if ($form->isValid()) {
                 $this->userModel->edit($form->getData(), $id);
                 $this->messageBag->addMessage('User updated');
+
                 return new RedirectResponse('/users');
             }
         }
@@ -138,8 +140,9 @@ class UserController
             $this->userModel->delete($id);
         } catch (\LogicException $exception) {
             $this->messageBag->addError($exception->getMessage());
+            return new RedirectResponse('/users');
         }
-
+        $this->messageBag->addMessage('User deleted');
 
         return new RedirectResponse('/users');
     }
@@ -157,9 +160,7 @@ class UserController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->userModel->changePassword($this->securityService->getUserId(), $form->getData()['newPassword']);
-                //TODO вывести сообщение об успешной смене пароля или логаута достаточно?
-                //return new RedirectResponse('/logout');
-
+                $this->messageBag->addMessage('Password changed');
             }
         }
         $path = 'User/my_profile.php';
