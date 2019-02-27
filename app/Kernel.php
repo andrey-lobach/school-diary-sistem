@@ -6,16 +6,16 @@ use Core\Response\Response;
 use Core\Router\Route;
 use Core\Router\Router;
 use Core\Security\Guardian;
+use Core\ServiceContainer;
 
 class Kernel
 {
     private $config;
     private $connection;
-
     public function __construct()
     {
         $this->config = require __DIR__.'/config/config.php';
-        $this->container = \Core\ServiceContainer::getInstance($this->config);
+        $this->container = ServiceContainer::getInstance($this->config);
     }
 
     public function getConnection()

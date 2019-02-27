@@ -109,4 +109,4 @@ class PasswordHelperTest extends TestCase
             ['andrey:lobach', ['lobach', 'andrey']],
         ];
     }
-} //TODO интеграционные тесты
+}

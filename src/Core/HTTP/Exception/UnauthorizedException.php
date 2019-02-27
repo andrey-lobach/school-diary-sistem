@@ -8,7 +8,6 @@
 
 namespace Core\HTTP\Exception;
 
-use Core\Response\Response;
 use Throwable;
 
 class UnauthorizedException extends RequestException
