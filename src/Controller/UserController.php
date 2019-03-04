@@ -8,6 +8,7 @@
 
 namespace Controller;
 
+use Core\HTTP\Exception\NotFoundException;
 use Core\MessageBag;
 use Core\Response\RedirectResponse;
 use Core\Response\Response;
@@ -64,11 +65,15 @@ class UserController
     }
 
     /**
+     * @param Request $request
+     *
      * @return Response
+     * @throws \Exception
      */
-    public function list(): Response
+    public function list(Request $request): Response
     {
-        $users = $this->userModel->getList();
+        //$users = $this->userModel->getList($request->get('filter', []));
+        $users =   $this->userModel->getList();
         $path = 'User/list.php';
 
         return new Response($this->renderer->render($path, ['users' => $users]));
@@ -107,7 +112,7 @@ class UserController
         $id = $request->get('id');
         $user = $this->userModel->getUser($id);
         if (null === $user) {
-            throw new \RuntimeException('user not found');
+            throw new NotFoundException();
         }
         $form = new UserForm($this->userModel, $user);
         if ($request->getMethod() === Request::POST) {
@@ -134,7 +139,7 @@ class UserController
     {
         $id = $request->get('id');
         if (!$this->userModel->getUser($id)) {
-            throw new \RuntimeException('User not exist');
+            throw new NotFoundException();
         }
         try {
             $this->userModel->delete($id);

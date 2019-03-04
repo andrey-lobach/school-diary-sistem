@@ -9,6 +9,7 @@
    <title>Users</title>
 </head>
 <body>
+
 <?php require __DIR__.'/../Core/menu.php'; ?>
 
 <div class="wrap">
@@ -18,12 +19,20 @@
   <a href="/users/create" ><i class="fas fa-user-plus"></i>Add user</a>
 </div>
   <div class="list">
-    <div class="row head">
-      <div>Login</div>
-      <div>First Name</div>
-      <div>Last Name</div>
-      <div>Role</div>
-      <div></div>
+    <div class="head">
+    <div class="fields">
+      <div class="field">Login</div>
+      <div class="field">First Name</div>
+      <div class="field">Last Name</div>
+      <div class="field">Role</div>
+      </div>
+      <div class="form_wrap"><form method="post">
+          <input type="text" name="filter_value">
+          <input name="field-hidden" value="" hidden>
+          <input name="direction-hidden" value="" hidden>
+          <input name="offset" value="" hidden>
+          <button type="submit" class="submit_button">Filter</button>
+        </form></div>
     </div>
     <?php foreach ($this->data['users'] as $user) { ?>
       <div class="row">
@@ -37,7 +46,20 @@
         </div>
       </div>
     <?php } ?>
+    <div class="row end">
+        <div></div>
+        <div>
+        <label>Показывать по</label>
+
+           <select name="limit">
+             <option selected>5</option>
+             <option>10</option>
+             <option>20</option>
+           </select>
+        </div>
+      </div>
   </div>
 </div>
 <?php require __DIR__.'/../Core/footer.html'; ?>
+<script type="text/javascript" src="/js/filter.js"></script>
 </body>

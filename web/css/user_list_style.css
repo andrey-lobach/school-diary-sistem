@@ -34,9 +34,15 @@ body {
     width: 20%;
     margin: 0 auto;
 }
-.head {
+.head, .end  {
     background-color: rgba(11,24,68,1);
     color: white;
+}
+.head {
+    display: flex;
+    width: 70%;
+    border-radius:20px;
+    height: 30px;
 }
 .buttons {
     display: flex;
@@ -54,7 +60,7 @@ body {
     border-radius: 20px;
 }
 
-.edit_button:hover, .title a:hover {
+.edit_button:hover, .title a:hover, .submit_button:hover {
     background-color: rgba(11,24,68,1);
     color: white;
 }
@@ -94,4 +100,61 @@ h1 {
 }
 i {
     margin-left: 5px;
+}
+.form_wrap {
+    width: 20%;
+    display: flex;
+    align-items: center;
+}
+form {
+    display: flex;
+    justify-content: center;
+    padding-right: 5px;
+    align-items: center;
+}
+form input {
+    width: 50%;
+    text-align: center;
+    border-radius: 10px;
+    outline: none;
+}
+.submit_button {
+    width: 30%;
+    height: 20px;
+    background-color: rgb(238, 238, 238);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color:rgb(72,72,72);
+    border-radius: 20px;
+    outline: none;
+    cursor: pointer;
+}
+.field {
+    cursor: pointer;
+    border-radius: 10px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25%;
+}
+
+
+.field:hover {
+ background-color: #A52A2A;
+}
+
+.selected {
+    background-color: #A52A2A;
+}
+.fields {
+    display: flex;
+    width: 80%;
+}
+.asc::after {
+    content: "▲";
+}
+.desc::after {
+    content: "▼";
 }

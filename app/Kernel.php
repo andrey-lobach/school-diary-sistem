@@ -1,5 +1,6 @@
 <?php
 
+use Core\HTTP\Exception\NotFoundException;
 use Core\HTTP\Exception\RequestException;
 use Core\Request\Request;
 use Core\Response\Response;
@@ -33,7 +34,7 @@ class Kernel
         require_once __DIR__.'/config/routes.php';
         $route = Router::findRoute($request);
         if ($route === null) {
-            throw new RequestException('Route not found', 404);
+            throw new NotFoundException();
         }
 
         return $route;
@@ -42,16 +43,24 @@ class Kernel
     public function createResponse(Request $request): Response
     {
         $route = $this->getRoute($request);
+        $params = $route->getPathValues($request->getPath());
+        $request->setAttributes($params);
         /** @var Guardian $guardrian */
         $guardrian = $this->container->get(Guardian::class);
         if ($response = $guardrian->handle($route, $request)) {
             return $response;
         }
         $controller = $this->getController($route);
-        $params = $route->getPathValues($request->getPath());
-        $request->setAttributes($params);
 
         return call_user_func([$controller, $route->getMethod()], $request);
+    }
+
+    /**
+     * @return ServiceContainer
+     */
+    public function getContainer(): ServiceContainer
+    {
+        return $this->container;
     }
 
     private function getController(Route $route)

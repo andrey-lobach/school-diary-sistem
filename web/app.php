@@ -7,13 +7,13 @@ require_once __DIR__.'/../app/autoload.php';
 $kernel = new Kernel;
 
 try {
-    $container = \Core\ServiceContainer::getInstance();
     $request = RequestFactory::createRequest();
     $response = $kernel->createResponse($request);
     $response->send();
 } catch (HTTPExceptionInterface $exception) {
-    echo $exception->getCode();
-    echo $exception->getMessage();
+    //TODO create service to render HTTPexceptions
+   // $response = $kernel->getContainer()->get()->createResponse($exception);
+    //$response->send();
 } catch (Exception $exception) {
     echo $exception->getCode();
     echo $exception->getMessage();

@@ -3,10 +3,11 @@
 use Enum\RolesEnum;
 
 return [
-    '^/users'                                                               => [RolesEnum::ADMIN],
-    '^/subjects'                                                            => [RolesEnum::ADMIN],
-    '^/enrollment'                                                          => [RolesEnum::ADMIN],
-    '^/classes(?:|/\d+|/\d+/add-student|/\d+/leave-class|/\d+/join-class)$' => [RolesEnum::ADMIN, RolesEnum::TEACHER],
-    '^/classes/'                                                            => [RolesEnum::ADMIN],
-    '^/my-class$'                                                           => [RolesEnum::STUDENT],
+    '^/users'      => [RolesEnum::ADMIN],
+    '^/classes(?:|/\d+|/\d+/add-student)$'   => [RolesEnum::ADMIN, RolesEnum::TEACHER],
+    '^/classes(?:|/\d+/leave-class|/\d+/join-class)$'   => [RolesEnum::TEACHER], //FIXME неправильная регулярка
+    '^/classes(?:|/\d+/add-teacher)$'   => [RolesEnum::ADMIN],
+    '^/my-class$'  => [RolesEnum::STUDENT],
 ];
+
+//FIXME NICHEGO NE RABOTAET!!!!!!!

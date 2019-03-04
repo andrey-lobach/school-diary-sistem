@@ -143,7 +143,7 @@ class EnrollmentController
                 [
                     'form'           => $form,
                     'availableUsers' => $this->userModel->getAvailableTeachers($request->get('id')),
-                    'student'        => true,
+                    'teacher'        => true,
                     'class'          => $this->classModel->getClass($request->get('id')),
                 ]
             )
@@ -161,7 +161,7 @@ class EnrollmentController
         $userId = $request->get('user_id');
         $classId = $request->get('class_id');
         if (!$this->userModel->getUser($userId)) {
-            throw new \RuntimeException('Enrollment or user not exist');
+            throw new NotFoundException();
         }
         if ($this->userModel->getUser($userId)['role'] === RolesEnum::TEACHER){
             $this->messageBag->addMessage('Teacher removed');

@@ -42,9 +42,11 @@ class UserModel
     }
 
     /**
+     * @param array $filter
+     *
      * @return array
      */
-    public function getList(): array
+    public function getList(array $filter = []): array
     {
         $sql = 'SELECT * FROM users ORDER BY login ASC';
 

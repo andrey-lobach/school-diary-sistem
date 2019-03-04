@@ -32,6 +32,10 @@ class MenuBuilderTest extends TestCase
             ->willReturn($role);
         $menuBuilder = new MenuBuilder($menu, $security);
 
+        /* $items = (function(){
+            return $this->getItems();
+        })->call($menuBuilder); */
+
         return $this->invokeMethod($menuBuilder, 'getItems');
     }
 

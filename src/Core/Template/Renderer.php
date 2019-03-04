@@ -65,8 +65,8 @@ class Renderer
     private function getRealPath(string $path): string
     {
         $realPath = $this->viewDir.'/'.$path;
-        if (!file_exists($realPath)) {
-            throw new \RuntimeException(sprintf('Template %s not exists', $path));
+        if (!file_exists($realPath) && is_readable($realPath)) {
+            throw new \LogicException(sprintf('Template %s not exists', $path));
         }
 
         return $realPath;

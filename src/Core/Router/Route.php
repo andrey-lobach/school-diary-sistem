@@ -93,7 +93,7 @@ class Route
             $gaps = $matches[1];
         }
         if (array_diff(array_keys($rules), $gaps)) {
-            throw new \Exception('invalid route rules configuration');
+            throw new \LogicException('invalid route rules configuration');
         }
 
         return array_merge(array_fill_keys($gaps, '\w+'), $rules);

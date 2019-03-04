@@ -8,6 +8,8 @@
 
 namespace Controller;
 
+use Core\HTTP\Exception\NotFoundException;
+use Core\HTTP\Exception\RequestException;
 use Core\MessageBag;
 use Core\Template\Renderer;
 use Enum\RolesEnum;
@@ -132,7 +134,7 @@ class ClassController
         $id = $request->get('id');
         $class = $this->classModel->getClass($id);
         if (null === $class) {
-            throw new \RuntimeException('class not found');
+            throw new NotFoundException();
         }
         $form = new ClassForm($this->classModel, $class);
         if ($request->getMethod() === Request::POST) {
@@ -159,7 +161,7 @@ class ClassController
     {
         $id = $request->get('id');
         if (!$this->classModel->getClass($id)) {
-            throw new \RuntimeException('Class not exist');
+            throw new NotFoundException();
         }
         $this->classModel->delete($id);
         $this->messageBag->addMessage('Class deleted');

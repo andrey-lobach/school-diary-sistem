@@ -6,7 +6,7 @@
  * Time: 17.27
  */
 
-namespace Test\Unit\Middleware;
+namespace Test\Integration\Middleware;
 
 use Core\Request\Request;
 use Core\Router\Route;
@@ -22,16 +22,15 @@ class RoleMiddlewareTest extends TestCase
      * @dataProvider getDataForTestNotPermittedRequest
      * @expectedException \Core\HTTP\Exception\UnauthorizedException
      *
-     * @param array   $routeSecurity
      * @param string  $role
      * @param Route   $route
      * @param Request $request
      */
 
-    public function testNotPermittedRequest(array $routeSecurity, string $role, Route $route, Request $request)
+    public function testNotPermittedRequest(string $role, Route $route, Request $request)
     {
         echo 'role: ', $role, ' url: ', $request->getPath(), PHP_EOL;//DELETE
-        $this->handleRequest($routeSecurity, $role, $route, $request);
+        $this->handleRequest($role, $route, $request);
     }
 
     /**
@@ -39,42 +38,43 @@ class RoleMiddlewareTest extends TestCase
      *
      * @doesNotPerformAssertions
      *
-     * @param array   $routeSecurity
      * @param string  $role
      * @param Route   $route
      * @param Request $request
      */
-    public function testPermittedRequest(array $routeSecurity, string $role, Route $route, Request $request)
+    public function testPermittedRequest(string $role, Route $route, Request $request)
     {
         echo 'role: ', $role, ' url: ', $request->getPath(), PHP_EOL;//DELETE
-        $this->handleRequest($routeSecurity, $role, $route, $request);
+        $this->handleRequest($role, $route, $request);
     }
 
     public function getDataForTestNotPermittedRequest(): array
     {
         $data = [];
-        $routeSecurity = $this->getRouteSecurity();
         $route = new Route('', '', '');
+        $adminAndTeacher = [RolesEnum::ADMIN, RolesEnum::TEACHER];
+        foreach ($adminAndTeacher as $role) {
+            $data[] = [$role, $route, new Request('/my-class', '', [])];
+        }
         $adminUrls = [
-            '/classes',
-            '/classes/1',
-            '/classes/1/add-student',
             '/classes/1/join-class',
             '/classes/1/leave-class',
-            '/my-class'
         ];
         foreach ($adminUrls as $url) {
-            $data[] = [$routeSecurity, RolesEnum::ADMIN, $route, new Request($url, '', [])];
+            $data[] = [RolesEnum::ADMIN, $route, new Request($url, '', [])];
         }
         $teacherUrls = [
             '/users',
             '/users/create',
             '/users/1/edit',
             '/users/1/delete',
-            '/my-class'
+            '/classes/1/add-teacher',
+            '/classes/create',
+            '/classes/1/edit',
+            '/classes/1/delete',
         ];
         foreach ($teacherUrls as $url) {
-            $data[] = [$routeSecurity, RolesEnum::TEACHER, $route, new Request($url, '', [])];
+            $data[] = [ RolesEnum::TEACHER, $route, new Request($url, '', [])];
         }
         $studentUrls = [
             '/users',
@@ -92,7 +92,7 @@ class RoleMiddlewareTest extends TestCase
             '/classes/1/leave-class',
         ];
         foreach ($studentUrls as $url) {
-            $data[] = [$routeSecurity, RolesEnum::STUDENT, $route, new Request($url, '', [])];
+            $data[] = [ RolesEnum::STUDENT, $route, new Request($url, '', [])];
         }
 
         return $data;
@@ -102,25 +102,22 @@ class RoleMiddlewareTest extends TestCase
     {
         $data = [];
         $route = new Route('', '', '');
-        $routeSecurity = $this->getRouteSecurity();
-        $urls = [
-            '/my-profile',
-            '/logout',
-        ];
-        foreach ($urls as $url) {
-            foreach (RolesEnum::getAll() as $role) {
-                $data[] = [$routeSecurity, $role, $route, new Request($url, '', [])];
-            }
-        }
         $adminUrls = [
             '/users',
             '/users/create',
             '/users/1/edit',
             '/users/1/delete',
+            '/classes',
+            '/classes/create',
+            '/classes/1',
+            '/classes/1/edit',
+            '/classes/1/delete',
+            '/classes/1/add-student',
+            '/classes/1/add-teacher',
         ];
 
         foreach ($adminUrls as $url) {
-            $data[] = [$routeSecurity, RolesEnum::ADMIN, $route, new Request($url, '', [])];
+            $data[] = [RolesEnum::ADMIN, $route, new Request($url, '', [])];
         }
         $teacherUrls = [
             '/classes',
@@ -131,9 +128,9 @@ class RoleMiddlewareTest extends TestCase
         ];
 
         foreach ($teacherUrls as $url) {
-            $data[] = [$routeSecurity, RolesEnum::TEACHER, $route, new Request($url, '', [])];
+            $data[] = [RolesEnum::TEACHER, $route, new Request($url, '', [])];
         }
-        $data[] = [$routeSecurity, RolesEnum::STUDENT, $route, new Request('/my-class', '', [])];
+        $data[] = [RolesEnum::STUDENT, $route, new Request('/my-class', '', [])];
 
         return $data;
     }
@@ -143,31 +140,24 @@ class RoleMiddlewareTest extends TestCase
      */
     public function getRouteSecurity(): array
     {
-        return [
-            '^/logout$'      => [RolesEnum::getAll()],
-            '^/my-profile$' => [RolesEnum::getAll()],
-            '^/users'       => [RolesEnum::ADMIN],
-            '^/classes'     => [RolesEnum::TEACHER],
-            '^/my-class$'   => [RolesEnum::STUDENT],
-        ];
+        return require __DIR__.'/../../../app/config/security.php';
     }
 
     /**
-     * @param array   $routeSecurity
      * @param string  $role
      * @param Route   $route
      * @param Request $request
      *
      * @throws \Core\HTTP\Exception\UnauthorizedException
      */
-    public function handleRequest(array $routeSecurity, string $role, Route $route, Request $request)
+    public function handleRequest(string $role, Route $route, Request $request)
     {
         /** @var SecurityService|MockObject $security */
         $security = $this->createMock(SecurityService::class);
         $security
             ->method('getRole')
             ->willReturn($role);
-        $middleware = new RoleMiddleware($routeSecurity, $security);
+        $middleware = new RoleMiddleware($this->getRouteSecurity(), $security);
         $middleware->handle($route, $request);
     }
 }

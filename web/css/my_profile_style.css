@@ -9,7 +9,7 @@ body {
     display: flex;
     height: 400px;
     justify-content: space-around;
-    align-items: center;
+    padding-top: 50px;
 }
 
 .profile-block {
