@@ -46,10 +46,23 @@ class UserModel
      *
      * @return array
      */
-    public function getList(array $filter = []): array
-    {
-        $sql = 'SELECT * FROM users ORDER BY login ASC';
-
+    public function getList(
+        array $filter = [
+            'filter_field'     => 'login',
+            'filter_value'     => '',
+            'offset'           => 0,
+            'per_page'         => 5,
+            'filter_direction' => 'asc',
+        ]
+    ): array {
+        $sql = 'SELECT * FROM users ';
+        if ($filter['filter_value'] != '') {
+            $sql = $sql.'WHERE '.$filter['filter_field']. ' LIKE \'%'.$filter['filter_value'].'%\'';
+        }
+        if ($filter['filter_field'] != ''){
+            $sql = $sql.' ORDER BY '.$filter['filter_field'];
+        }
+        $sql = $sql.' '.$filter['filter_direction'].' LIMIT '.$filter['per_page'].' OFFSET '.$filter['offset'];
         return $this->connection->fetchAll($sql);
     }
 

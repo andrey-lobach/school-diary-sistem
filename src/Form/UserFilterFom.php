@@ -14,6 +14,7 @@ use Model\UserModel;
 class UserFilterFom
 {
     private $data;
+
     private $violations = [];
 
     /**
@@ -38,19 +39,19 @@ class UserFilterFom
      */
     public function handleRequest(Request $request)
     {
-        $perPage = $this->data['perPage'] = $request->get('per_page');
-        $filterField = $this->data['filterField'] = $request->get('filter_field');
-        $direction = $this->data['direction'] = $request->get('filter_direction');
-        $filterValue = $this->data['filterValue'] = $request->get('filter_value');
-        print_r($this->data);
-        if (!$perPage) {
-            $this->violations['perPage'] = 'Set per page field';
-        } elseif ($perPage > 200) {
-            $this->data['perPage'] = 200;
+        $queryParts = explode('&', parse_url($request->getPath(), PHP_URL_QUERY));
+        foreach ($queryParts as $queryPart) {
+            $parts = explode('=', $queryPart);
+            if ($parts[1]) {
+                $this->data[$parts[0]] = $parts[1];
+            }
         }
-        if (!$filterField) {
-            $this->violations['filterField'] = 'Choose filter field';
+        if (!$this->data['per_page']) {
+            $this->violations['per_page'] = 'No per page value';
+        } elseif ($this->data['per_page'] > 200) {
+            $this->data['per_page'] = 200;
         }
+        $this->data['offset'] = 0; // TODO
     }
 
     /**
@@ -76,5 +77,4 @@ class UserFilterFom
     {
         return count($this->violations) === 0;
     }
-
 }

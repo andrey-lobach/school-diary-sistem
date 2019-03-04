@@ -73,19 +73,19 @@ class UserController
      */
     public function list(Request $request): Response
     {
-        //$users = $this->userModel->getList($request->get('filter', []));
+        $path = 'User/list.php';
         $form = new UserFilterFom($this->userModel);
-        if ($request->getMethod() === Request::POST){
+        if ($request->getPath() !== '/users') {
             $form->handleRequest($request);
-            if ($form->isValid()){
-                //TODO
+            if ($form->isValid()) {
+                $users = $this->userModel->getList($form->getData());
+                return new Response($this->renderer->render($path, ['users' => $users, 'form' => $form]));
             }
         }
-        $users =   $this->userModel->getList();
-        $path = 'User/list.php';
+        $users = $this->userModel->getList();
 
         return new Response($this->renderer->render($path, ['users' => $users, 'form' => $form]));
-    }
+    } //TODO пагинация и стили для формы
 
     /**
      * @param Request $request
@@ -154,6 +154,7 @@ class UserController
             $this->userModel->delete($id);
         } catch (\LogicException $exception) {
             $this->messageBag->addError($exception->getMessage());
+
             return new RedirectResponse('/users');
         }
         $this->messageBag->addMessage('User deleted');

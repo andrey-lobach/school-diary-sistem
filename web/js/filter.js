@@ -11,7 +11,7 @@
   }
   wrap.addEventListener('click', () => {
     current = event.target;
-    filterField.value = current.innerText;
+    filterField.value = current.id;
     if (!current.classList.contains('asc') && !current.classList.contains('desc')) {
       clear();
       current.classList.add('asc');
