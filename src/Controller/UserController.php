@@ -18,6 +18,7 @@ use Core\Security\StringBuilder;
 use Core\Template\Renderer;
 use Enum\RolesEnum;
 use Form\ChangePasswordForm;
+use Form\UserFilterFom;
 use Form\UserForm;
 use Model\UserModel;
 use Service\SecurityService;
@@ -73,10 +74,17 @@ class UserController
     public function list(Request $request): Response
     {
         //$users = $this->userModel->getList($request->get('filter', []));
+        $form = new UserFilterFom($this->userModel);
+        if ($request->getMethod() === Request::POST){
+            $form->handleRequest($request);
+            if ($form->isValid()){
+                //TODO
+            }
+        }
         $users =   $this->userModel->getList();
         $path = 'User/list.php';
 
-        return new Response($this->renderer->render($path, ['users' => $users]));
+        return new Response($this->renderer->render($path, ['users' => $users, 'form' => $form]));
     }
 
     /**
@@ -106,6 +114,7 @@ class UserController
      * @param Request $request
      *
      * @return RedirectResponse|Response
+     * @throws NotFoundException
      */
     public function edit(Request $request)
     {

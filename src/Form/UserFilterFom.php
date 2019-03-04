@@ -38,7 +38,19 @@ class UserFilterFom
      */
     public function handleRequest(Request $request)
     {
-
+        $perPage = $this->data['perPage'] = $request->get('per_page');
+        $filterField = $this->data['filterField'] = $request->get('filter_field');
+        $direction = $this->data['direction'] = $request->get('filter_direction');
+        $filterValue = $this->data['filterValue'] = $request->get('filter_value');
+        print_r($this->data);
+        if (!$perPage) {
+            $this->violations['perPage'] = 'Set per page field';
+        } elseif ($perPage > 200) {
+            $this->data['perPage'] = 200;
+        }
+        if (!$filterField) {
+            $this->violations['filterField'] = 'Choose filter field';
+        }
     }
 
     /**
