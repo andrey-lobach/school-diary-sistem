@@ -30,7 +30,7 @@ class UserFilterFom
      */
     public function __construct(UserModel $userModel)
     {
-        $this->data = ['page' => ['limit' => 5, 'offset' => 0], 'order_dir' => 'ASC', 'order_by' => 'login', 'filter' => ['name' => null, 'role' => null]];
+        $this->data = ['page' => ['limit' => 5, 'offset' => 0, 'current_page' => 1], 'order_dir' => 'ASC', 'order_by' => 'login', 'filter' => ['name' => null, 'role' => null]];
         $this->userModel = $userModel;
     }
 

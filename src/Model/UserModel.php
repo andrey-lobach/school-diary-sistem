@@ -50,8 +50,8 @@ class UserModel
     {
         $defaults = ['order_by' => null, 'order_dir' => null, 'page' => ['limit' => 5, 'offset' => 0], 'filter' => ['role' => null, 'name' => null]];
         $sql = $this->prepareQuery($defaults, $params);
-//        echo $sql;
-//        die('');
+        echo $sql;
+        //die('');
         return $this->connection->fetchAll($sql);
     }
 

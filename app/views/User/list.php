@@ -43,6 +43,8 @@ $current_page = $data['page']['offset'] ?? 1;
             <input class="filter_field" name="order_by" value="<?php echo $data['order_by'] ?>" hidden>
             <input class="filter_direction" name="order_dir" value="" hidden>
             <!-- //TODO  -->
+            <input class="offset" name="page[current_page]" value="<?php echo $data['page']['offset']; ?>" hidden>
+            <input class="offset" name="page[offset]" value="<?php echo $data['page']['offset']; ?>" hidden>
             <input class="offset" name="page[offset]" value="<?php echo $data['page']['offset']; ?>" hidden>
             <button type="submit" class="submit_button">Filter</button>
         </div>
@@ -86,9 +88,7 @@ $current_page = $data['page']['offset'] ?? 1;
             <div class="row end">
                 <div class="pages">
                     <a href="<?php // change a to buttons
-                    if ($current_page > 1) {
-                        echo '/users?' . preg_replace('/offset%5D=\d+/', (int)$current_page - 1, $this->data['query']);
-                    }
+
                     ?>"> <i class="fas fa-arrow-circle-left"></i></a>
                     <?php
                     for ($i = 1; $i <= $countOfPages; $i++) { ?>
