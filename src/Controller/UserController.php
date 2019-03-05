@@ -48,17 +48,18 @@ class UserController
     /**
      * UserController constructor.
      *
-     * @param UserModel       $user
-     * @param Renderer        $renderer
+     * @param UserModel $user
+     * @param Renderer $renderer
      * @param SecurityService $securityService
-     * @param MessageBag      $messageBag
+     * @param MessageBag $messageBag
      */
     public function __construct(
         UserModel $user,
         Renderer $renderer,
         SecurityService $securityService,
         MessageBag $messageBag
-    ) {
+    )
+    {
         $this->userModel = $user;
         $this->renderer = $renderer;
         $this->securityService = $securityService;
@@ -79,13 +80,12 @@ class UserController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $users = $this->userModel->getList($form->getData());
-                return new Response($this->renderer->render($path, ['users' => $users, 'form' => $form]));
+                return new Response($this->renderer->render($path, ['users' => $users, 'form' => $form, 'countOfPages' => $this->userModel->getCountOfPages($form->getData()), 'query' => parse_url($request->getPath(), PHP_URL_QUERY)]));
             }
         }
         $users = $this->userModel->getList();
-
-        return new Response($this->renderer->render($path, ['users' => $users, 'form' => $form]));
-    } //TODO пагинация и стили для формы
+        return new Response($this->renderer->render($path, ['users' => $users, 'form' => $form, 'countOfPages' => $this->userModel->getCountOfPages([])]));
+    }
 
     /**
      * @param Request $request

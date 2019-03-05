@@ -32,4 +32,9 @@ class Connection
         $statement = $this->pdo->prepare($sql);
         $statement->execute($params);
     }
+
+    public function quote($value): string
+    {
+        return $this->pdo->quote($value);
+    }
 }

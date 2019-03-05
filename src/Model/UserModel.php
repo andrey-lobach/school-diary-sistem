@@ -30,9 +30,9 @@ class UserModel
     /**
      * UserModel constructor.
      *
-     * @param Connection     $connection
+     * @param Connection $connection
      * @param PasswordHelper $passwordHelper
-     * @param StringBuilder  $stringBuilder
+     * @param StringBuilder $stringBuilder
      */
     public function __construct(Connection $connection, PasswordHelper $passwordHelper, StringBuilder $stringBuilder)
     {
@@ -42,28 +42,29 @@ class UserModel
     }
 
     /**
-     * @param array $filter
+     * @param array $params
      *
      * @return array
      */
-    public function getList(
-        array $filter = [
-            'filter_field'     => 'login',
-            'filter_value'     => '',
-            'offset'           => 0,
-            'per_page'         => 5,
-            'filter_direction' => 'asc',
-        ]
-    ): array {
-        $sql = 'SELECT * FROM users ';
-        if ($filter['filter_value'] != '') {
-            $sql = $sql.'WHERE '.$filter['filter_field']. ' LIKE \'%'.$filter['filter_value'].'%\'';
-        }
-        if ($filter['filter_field'] != ''){
-            $sql = $sql.' ORDER BY '.$filter['filter_field'];
-        }
-        $sql = $sql.' '.$filter['filter_direction'].' LIMIT '.$filter['per_page'].' OFFSET '.$filter['offset'];
+    public function getList(array $params = []): array
+    {
+        $defaults = ['order_by' => null, 'order_dir' => null, 'page' => ['limit' => 5, 'offset' => 0], 'filter' => ['role' => null, 'name' => null]];
+        $sql = $this->prepareQuery($defaults, $params);
+//        echo $sql;
+//        die('');
         return $this->connection->fetchAll($sql);
+    }
+
+    public function getCountOfPages(array $params)
+    {
+        if (!isset($params['page']['limit'])) {
+            $params['page']['limit'] = 5;
+        }
+        $limit = $params['page']['limit'];
+        $defaults = ['order_by' => 'login', 'order_dir' => 'asc', 'filter' => ['role' => null, 'name' => null]];
+        unset($params['page']);
+        $sql = $this->prepareQuery($defaults, $params);
+        return ceil(count($this->connection->fetchAll($sql)) / $limit);
     }
 
     /**
@@ -78,7 +79,7 @@ class UserModel
 
     /**
      * @param array $user
-     * @param int   $id
+     * @param int $id
      */
     public function edit(array $user, int $id)
     {
@@ -94,7 +95,7 @@ class UserModel
     public function delete(int $id)
     {
         if ($this->getUser($id)['role'] === RolesEnum::ADMIN
-            && (int) $this->getCountOfAdmins() === 1
+            && (int)$this->getCountOfAdmins() === 1
         ) {
             throw new \LogicException('Can not delete last admin');
         }
@@ -103,7 +104,7 @@ class UserModel
     }
 
     /**
-     * @param string   $login
+     * @param string $login
      * @param int|null $id
      *
      * @return bool
@@ -118,7 +119,7 @@ class UserModel
             $params['id'] = $id;
         }
 
-        return (bool) $this->connection->fetch($sql, $params, \PDO::FETCH_COLUMN);
+        return (bool)$this->connection->fetch($sql, $params, \PDO::FETCH_COLUMN);
     }
 
     /**
@@ -152,7 +153,7 @@ class UserModel
         $salt = $this->stringBuilder->build(5);
         $hash = $this->passwordHelper->getHash($plainPassword, $salt);
         $sql = 'UPDATE users SET password=:password WHERE id=:id;';
-        $this->connection->query($sql, ['id' => $userId, 'password' => $salt.':'.$hash]);
+        $this->connection->query($sql, ['id' => $userId, 'password' => $salt . ':' . $hash]);
     }
 
     /**
@@ -210,10 +211,38 @@ class UserModel
         return $teachers;
     }
 
-    public function getCountOfAdmins()
+    /**
+     * @param array $defaults
+     * @param array $params
+     * @return string
+     */
+    private function prepareQuery(array $defaults, array $params): string
     {
-        $sql = 'SELECT count(id) FROM users WHERE role=:role';
+        $params = array_merge($defaults, $params);
 
-        return $this->connection->fetch($sql, ['role' => RolesEnum::ADMIN])['count(id)'];
+        $sql = 'SELECT * FROM users ';
+        $where = [];
+        if ($params['filter']['role']) {
+            $where[] = 'role=\'' . $params['filter']['role'] . '\' ';
+        }
+
+        if ($params['filter']['name']) {
+            $where[] = sprintf(
+                '(login like %1$s or concat(first_name, %2$s, last_name) like %1$s) ',
+                $this->connection->quote('%' . $params['filter']['name'] . '%'),
+                $this->connection->quote(' ')
+            );
+        }
+        if ($where) {
+            $sql .= ' where ' . implode(' AND ', $where);
+        }
+        if ($params['order_by']) {
+            $sql = $sql . 'order by ' . $params['order_by'] . ' ' . $params['order_dir'] . ' ';
+        }
+        if ($params['page']['limit']) {
+            $sql = $sql . 'limit ' . $params['page']['limit'] . ' offset ' . $params['page']['offset'];
+        }
+        return $sql; //TODO
     }
+
 }

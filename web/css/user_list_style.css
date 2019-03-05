@@ -156,14 +156,61 @@ form {
 }
 .filter {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 30%;
-    justify-content: space-around;
+    width: 70%;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 15px;
 }
 input {
     border-radius: 20px;
     outline: none;
     text-align: center;
+    width: 60%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+
+}
+.filter button {
+    width: 20%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+
+}
+.filter select {
+    outline: none;
+    border-radius: 20px;
+    width: 15%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    text-align-last: center;
+    margin: 0 auto;
+}
+.per_page_select {
+    outline: none;
+    border-radius: 20px;
+}
+.current_page {
+    background-color: #A52A2A;
+    color: white;
+}
+.pages {
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.pages button {
+    cursor: pointer;
+    width: 15%;
+    height: 15%;
+    border-radius: 20px;
+    outline: none;
+}
+.pages button:hover {
+    background-color: #A52A2A;
+    color: white;
+}
+.pages a {
+    color: white;
+    font-size: 20px;
+}
+.pages a:hover{
+    color: #A52A2A;
 }

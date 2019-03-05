@@ -54,3 +54,7 @@ h1 {
     color: #A52A2A;
     font-size:25px;
 }
+label {
+    color: #A52A2A;
+    font-weight: bold;
+}

@@ -26,11 +26,11 @@ class UserFilterFom
      * UserFilterFom constructor.
      *
      * @param UserModel $userModel
-     * @param array     $data
+     * @param array $data
      */
-    public function __construct(UserModel $userModel, array $data = [])
+    public function __construct(UserModel $userModel)
     {
-        $this->data = $data;
+        $this->data = ['page' => ['limit' => 5, 'offset' => 0], 'order_dir' => 'ASC', 'order_by' => 'login', 'filter' => ['name' => null, 'role' => null]];
         $this->userModel = $userModel;
     }
 
@@ -39,19 +39,32 @@ class UserFilterFom
      */
     public function handleRequest(Request $request)
     {
-        $queryParts = explode('&', parse_url($request->getPath(), PHP_URL_QUERY));
-        foreach ($queryParts as $queryPart) {
-            $parts = explode('=', $queryPart);
-            if ($parts[1]) {
-                $this->data[$parts[0]] = $parts[1];
-            }
+        $this->data['page'] = array_merge($this->data['page'], (array)$request->get('page', []));
+        $this->data['filter'] = array_merge($this->data['filter'], $request->get('filter', []));
+        $this->data['order_dir'] = $request->get('order_dir');
+        $this->data['order_by'] = $request->get('order_by');
+        if (!$this->data['page']['limit']) {
+            $this->violations['page']['limit'] = 'No per page value';
+        } elseif ($this->data['page']['limit'] > 200) {
+            $this->data['page']['limit'] = 200;
         }
-        if (!$this->data['per_page']) {
-            $this->violations['per_page'] = 'No per page value';
-        } elseif ($this->data['per_page'] > 200) {
-            $this->data['per_page'] = 200;
+        if ($this->data['filter']['name'] === '') {
+            $this->data['filter']['name'] = null;
         }
-        $this->data['offset'] = 0; // TODO
+        if ($this->data['order_by'] === '') {
+            $this->data['order_by'] = null;
+        }
+        if ($this->data['filter']['role'] === '') {
+            $this->data['filter']['role'] = null;
+        }
+        if ($this->data['page']['offset'] === '') {
+            $this->data['page']['offset'] = 0;
+        } else {
+            $this->data['current_page'] = $this->data['page']['offset'];
+            $this->data['page']['offset'] = ($this->data['page']['offset'] - 1) * $this->data['page']['limit'];
+        }
+
+
     }
 
     /**

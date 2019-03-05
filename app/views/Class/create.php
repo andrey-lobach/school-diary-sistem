@@ -16,6 +16,7 @@
   <form method="post">
     <h1><?php echo isset($this->data['class']) ? 'Edit Class' : 'Create Class'; ?></h1>
       <?php require __DIR__.'/../Core/form_errors.php'; ?>
+      <label>Title:</label>
     <input type="text" name="title" placeholder="Title" required value="<?php echo $form->getData()['title']; ?>">
     <button type="submit" name="submit">Accept</button>
   </form>

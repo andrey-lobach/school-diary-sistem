@@ -19,14 +19,19 @@
   <form method="post">
     <h1><?php echo $isCreate ? 'Create User' : 'Edit User'; ?></h1>
       <?php require __DIR__.'/../Core/form_errors.php'; ?>
+  <label>Login:</label>
     <input type="text" name="login" placeholder="Login" required value="<?php echo $form->getData()['login']; ?>">
-    <input type="password" name="plain_password" placeholder="Password" <?php if ($isCreate)
+      <label>Password:</label>
+      <input type="password" name="plain_password" placeholder="Password" <?php if ($isCreate)
         echo 'required' ?>>
-    <input type="password" name="plain_password_confirm" placeholder="Confirm password" <?php if ($isCreate)
+      <label>Password confirm:</label>
+      <input type="password" name="plain_password_confirm" placeholder="Confirm password" <?php if ($isCreate)
         echo 'required' ?>>
-    <input type="text" name="first_name" placeholder="First Name" required value="<?php echo $form->getData(
+      <label>First Name:</label>
+      <input type="text" name="first_name" placeholder="First Name" required value="<?php echo $form->getData(
     )['first_name']; ?>">
-    <input type="text" name="last_name" placeholder="Last Name" required value="<?php echo $form->getData(
+      <label>Last Name:</label>
+      <input type="text" name="last_name" placeholder="Last Name" required value="<?php echo $form->getData(
     )['last_name']; ?>">
 
     <select name="role" required>

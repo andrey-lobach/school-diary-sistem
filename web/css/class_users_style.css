@@ -82,3 +82,10 @@ i {
     background-color: rgba(11,24,68,1);
     color: white;
 }
+.head {
+    background-color: rgba(11,24,68,1);
+    color: white;
+}
+.head div {
+    width: 33.3%;
+}
