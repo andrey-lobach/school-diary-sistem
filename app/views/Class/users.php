@@ -27,11 +27,7 @@ require __DIR__.'/../Core/menu.php'; ?>
   </div>
   <div class="students">
     <h3>Students:</h3>
-      <div class="row head">
-          <div>First Name</div>
-          <div>Last Name</div>
-          <div></div>
-      </div>
+
       <?php foreach ($this->data['list']['students'] as $student) { ?>
         <div class="row">
           <div><?php echo $this->data['userModel']->getUser($student['user_id'])['first_name'] ?></div>
@@ -45,11 +41,6 @@ require __DIR__.'/../Core/menu.php'; ?>
   </div>
   <div class="teachers">
     <h3>Teachers:</h3>
-      <div class="row head">
-          <div>First Name</div>
-          <div>Last Name</div>
-          <div></div>
-      </div>
       <?php foreach ($this->data['list']['teachers'] as $teacher) { ?>
         <div class="row">
           <div><?php echo $this->data['userModel']->getUser($teacher['user_id'])['first_name'] ?></div>
