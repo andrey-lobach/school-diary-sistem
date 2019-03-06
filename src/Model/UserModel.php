@@ -48,10 +48,8 @@ class UserModel
      */
     public function getList(array $params = []): array
     {
-        $defaults = ['order_by' => null, 'order_dir' => null, 'page' => ['limit' => 5, 'offset' => 0], 'filter' => ['role' => null, 'name' => null]];
+        $defaults = ['order_by' => 'login', 'order_dir' => 'asc', 'page' => ['limit' => 5, 'offset' => 0], 'filter' => ['role' => null, 'name' => null]];
         $sql = $this->prepareQuery($defaults, $params);
-        echo $sql;
-        //die('');
         return $this->connection->fetchAll($sql);
     }
 
@@ -223,7 +221,7 @@ class UserModel
         $sql = 'SELECT * FROM users ';
         $where = [];
         if ($params['filter']['role']) {
-            $where[] = 'role=\'' . $params['filter']['role'] . '\' ';
+            $where[] = sprintf('role= %s ', $this->connection->quote($params['filter']['role']));
         }
 
         if ($params['filter']['name']) {
@@ -237,12 +235,12 @@ class UserModel
             $sql .= ' where ' . implode(' AND ', $where);
         }
         if ($params['order_by']) {
-            $sql = $sql . 'order by ' . $params['order_by'] . ' ' . $params['order_dir'] . ' ';
+            $sql .= sprintf('order by %s %s ', $params['order_by'], $params['order_dir']);
         }
         if ($params['page']['limit']) {
-            $sql = $sql . 'limit ' . $params['page']['limit'] . ' offset ' . $params['page']['offset'];
+            $sql .= sprintf('limit %s offset %s', $params['page']['limit'], $params['page']['offset']);
         }
-        return $sql; //TODO
+        return $sql;
     }
 
 }

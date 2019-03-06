@@ -15,8 +15,6 @@
 <?php require __DIR__ . '/../Core/menu.php';
 $data = $this->data['form']->getData();
 $countOfPages = $this->data['countOfPages'];
-$current_page = $data['page']['offset'] ?? 1;
-
 ?>
 
 <div class="wrap">
@@ -41,11 +39,10 @@ $current_page = $data['page']['offset'] ?? 1;
                 <?php } ?>
             </select>
             <input class="filter_field" name="order_by" value="<?php echo $data['order_by'] ?>" hidden>
-            <input class="filter_direction" name="order_dir" value="" hidden>
-            <!-- //TODO  -->
-            <input class="offset" name="page[current_page]" value="<?php echo $data['page']['offset']; ?>" hidden>
+            <input class="filter_direction" name="order_dir" value="<?php echo $data['order_dir'] ?>" hidden>
+            <input class="current_page" name="page[current_page]" value="<?php echo $data['page']['current_page']; ?>" hidden>
             <input class="offset" name="page[offset]" value="<?php echo $data['page']['offset']; ?>" hidden>
-            <input class="offset" name="page[offset]" value="<?php echo $data['page']['offset']; ?>" hidden>
+            <input class="limit" name="page[limit]" value="<?php echo $data['page']['limit']; ?>" hidden>
             <button type="submit" class="submit_button">Filter</button>
         </div>
 
@@ -53,19 +50,19 @@ $current_page = $data['page']['offset'] ?? 1;
         <div class="list">
             <div class="head">
                 <div class="fields">
-                    <div id="login" data-field="login" class="<?php if ($data['order_by'] === 'login') {
+                    <div data-fld="login" class="<?php if ($data['order_by'] === 'login') {
                         echo ($data['order_dir'] === 'asc') ? 'asc' : 'desc';
                     } ?>">Login
                     </div>
-                    <div id="first_name" class="<?php if ($data['order_by'] === 'first_name') {
+                    <div data-fld="first_name" class="<?php if ($data['order_by'] === 'first_name') {
                         echo ($data['order_dir'] === 'asc') ? 'asc' : 'desc';
                     } ?>">First Name
                     </div>
-                    <div id="last_name" class="<?php if ($data['order_by'] === 'last_name') {
+                    <div data-fld="last_name" class="<?php if ($data['order_by'] === 'last_name') {
                         echo ($data['order_dir'] === 'asc') ? 'asc' : 'desc';
                     } ?>">Last Name
                     </div>
-                    <div id="role" class="<?php if ($data['order_by'] === 'role') {
+                    <div data-fld="role" class="<?php if ($data['order_by'] === 'role') {
                         echo ($data['order_dir'] === 'asc') ? 'asc' : 'desc';
                     } ?>">Role
                     </div>
@@ -87,18 +84,17 @@ $current_page = $data['page']['offset'] ?? 1;
             <?php } ?>
             <div class="row end">
                 <div class="pages">
-                    <a href="<?php // change a to buttons
-
-                    ?>"> <i class="fas fa-arrow-circle-left"></i></a>
+                   <button class="prev"><i class="fas fa-arrow-circle-left"></i></button>
+                    <input class="number_of_pages" hidden value="<?php echo $countOfPages ?>">
                     <?php
                     for ($i = 1; $i <= $countOfPages; $i++) { ?>
-                        <button type="submit" class="<?php if ((int)$current_page === $i) {
+                        <button type="submit" class="page <?php if ((int)$data['page']['current_page'] === $i) {
                             echo 'current_page';
                         } ?>"><?php echo $i; ?></button>
                         <?php if ($countOfPages === 1) break;
                     }
                     ?>
-                    <a href=""><i class="fas fa-arrow-circle-right"></i></a>
+                    <button class="next"><i class="fas fa-arrow-circle-right"></i></button>
                 </div>
                 <div>
                     <label>Per page</label>

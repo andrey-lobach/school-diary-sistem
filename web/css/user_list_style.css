@@ -192,6 +192,7 @@ input {
 }
 .pages {
     width: 50%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: space-around;
@@ -199,18 +200,29 @@ input {
 .pages button {
     cursor: pointer;
     width: 15%;
-    height: 15%;
+    height: 70%;
     border-radius: 20px;
     outline: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .pages button:hover {
     background-color: #A52A2A;
     color: white;
 }
-.pages a {
+.pages i {
+    margin:0;
     color: white;
-    font-size: 20px;
+    font-size: 15px;
 }
-.pages a:hover{
+.prev, .next {
+    background-color: transparent;
+    border:transparent;
+}
+.pages .prev:hover, .pages .next:hover {
+    background-color: transparent;
+}
+.pages i:hover {
     color: #A52A2A;
 }

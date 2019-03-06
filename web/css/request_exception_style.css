@@ -1,0 +1,22 @@
+body{
+    background-color: rgb(230,230,230);
+}
+.wrap {
+    max-width: 400px;
+    margin: 100px auto;
+    display: flex;
+    height: 500px;
+    justify-content: space-around;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+.text {
+    height: 30%;
+}
+.wrap i {
+    font-size:300px;
+    color: red;
+}

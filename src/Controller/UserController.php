@@ -80,7 +80,7 @@ class UserController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $users = $this->userModel->getList($form->getData());
-                return new Response($this->renderer->render($path, ['users' => $users, 'form' => $form, 'countOfPages' => $this->userModel->getCountOfPages($form->getData()), 'query' => parse_url($request->getPath(), PHP_URL_QUERY)]));
+                return new Response($this->renderer->render($path, ['users' => $users, 'form' => $form, 'countOfPages' => $this->userModel->getCountOfPages($form->getData())       ]));
             }
         }
         $users = $this->userModel->getList();
