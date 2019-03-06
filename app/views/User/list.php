@@ -90,7 +90,7 @@ $countOfPages = $this->data['countOfPages'];
                         if ($countOfPages>7 && $i>3 && $i<$countOfPages-2) {
                             if ($i===4) {
                             ?>
-                            <select class="page_select" >
+                            <select class="page_select <?php if ((int)$data['page']['current_page'] > 3 && (int)$data['page']['current_page']<$countOfPages-2){echo 'current_page'; } ?>" >
                                 <option></option>
                                 <?php for($j=$i; $j<$countOfPages-2; $j++) { ?>
                                     <option <?php if ($j===(int)$data['page']['current_page']) echo 'selected'?>><?php echo $j; ?></option><?php

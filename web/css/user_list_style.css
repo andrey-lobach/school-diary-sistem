@@ -231,7 +231,3 @@ input {
 .pages i:hover {
     color: #A52A2A;
 }
-.page_select:active {
-    background-color: #A52A2A;
-    color: white;
-}
