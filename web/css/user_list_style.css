@@ -182,24 +182,29 @@ input {
     text-align-last: center;
     margin: 0 auto;
 }
-.per_page_select {
+.per_page_select, .pages select {
     outline: none;
     border-radius: 20px;
+    cursor: pointer;
+    width: 40px;
+    height: 70%;
 }
 .current_page {
     background-color: #A52A2A;
     color: white;
 }
-.pages {
-    width: 50%;
+
+.end .pages {
+    padding-left: 100px;
+    width: 70%;
     height: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: flex-start;
 }
 .pages button {
     cursor: pointer;
-    width: 15%;
+    width: 20px;
     height: 70%;
     border-radius: 20px;
     outline: none;
@@ -225,4 +230,8 @@ input {
 }
 .pages i:hover {
     color: #A52A2A;
+}
+.page_select:active {
+    background-color: #A52A2A;
+    color: white;
 }

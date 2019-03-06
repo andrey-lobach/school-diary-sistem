@@ -134,7 +134,7 @@ class ClassController
         $id = $request->get('id');
         $class = $this->classModel->getClass($id);
         if (null === $class) {
-            throw new NotFoundException();
+            throw new NotFoundException('Class not found');
         }
         $form = new ClassForm($this->classModel, $class);
         if ($request->getMethod() === Request::POST) {
@@ -161,7 +161,7 @@ class ClassController
     {
         $id = $request->get('id');
         if (!$this->classModel->getClass($id)) {
-            throw new NotFoundException();
+            throw new NotFoundException('Class not found');
         }
         $this->classModel->delete($id);
         $this->messageBag->addMessage('Class deleted');

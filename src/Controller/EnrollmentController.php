@@ -161,7 +161,7 @@ class EnrollmentController
         $userId = $request->get('user_id');
         $classId = $request->get('class_id');
         if (!$this->userModel->getUser($userId)) {
-            throw new NotFoundException();
+            throw new NotFoundException('User not found');
         }
         if ($this->userModel->getUser($userId)['role'] === RolesEnum::TEACHER){
             $this->messageBag->addMessage('Teacher removed');

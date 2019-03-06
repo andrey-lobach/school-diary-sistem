@@ -30,8 +30,13 @@ wrap.addEventListener('click', () => {
     form.submit();
 });
 const perPageElement = document.getElementsByClassName('per_page_select')[0];
-perPageElement.addEventListener('change', () => form.submit());
+perPageElement.addEventListener('change', () => {
+    currentPageElement.value=1;
+    offset.value=0;
+    form.submit()
+});
 const pages = document.getElementsByClassName('pages')[0];
+const pageSelectElement = document.getElementsByClassName('page_select')[0];
 const offset = document.getElementsByClassName('offset')[0];
 const currentPageElement = document.getElementsByClassName('current_page')[0];
 pages.addEventListener('click', () => {
@@ -63,4 +68,11 @@ const submitButton = document.getElementsByClassName('submit_button')[0];
 submitButton.addEventListener('click', () => {
     currentPageElement.value = 1;
     offset.value = 0;
+});
+pageSelectElement.addEventListener('change', ()=> {
+    if (pageSelectElement.options[pageSelectElement.selectedIndex].text !== ''){
+        currentPageElement.value=parseInt(pageSelectElement.options[pageSelectElement.selectedIndex].text,10);
+        offset.value =(currentPageElement.value-1)*parseInt(perPageElement.value);
+    }
+    form.submit();
 });

@@ -49,7 +49,7 @@ class UserModel
     public function getList(array $params = []): array
     {
         $defaults = ['order_by' => 'login', 'order_dir' => 'asc', 'page' => ['limit' => 5, 'offset' => 0], 'filter' => ['role' => null, 'name' => null]];
-        $sql = $this->prepareQuery($defaults, $params);
+        $sql = $this->prepareQuery('SELECT * FROM users ', $defaults, $params);
         return $this->connection->fetchAll($sql);
     }
 
@@ -61,8 +61,8 @@ class UserModel
         $limit = $params['page']['limit'];
         $defaults = ['order_by' => 'login', 'order_dir' => 'asc', 'filter' => ['role' => null, 'name' => null]];
         unset($params['page']);
-        $sql = $this->prepareQuery($defaults, $params);
-        return ceil(count($this->connection->fetchAll($sql)) / $limit);
+        $sql = $this->prepareQuery('SELECT count(1) FROM users ', $defaults, $params);
+        return ceil($this->connection->fetch($sql,null,\PDO::FETCH_COLUMN) / $limit);
     }
 
     /**
@@ -210,15 +210,15 @@ class UserModel
     }
 
     /**
+     * @param string $sql
      * @param array $defaults
      * @param array $params
      * @return string
      */
-    private function prepareQuery(array $defaults, array $params): string
+    private function prepareQuery(string $sql, array $defaults, array $params): string
     {
         $params = array_merge($defaults, $params);
 
-        $sql = 'SELECT * FROM users ';
         $where = [];
         if ($params['filter']['role']) {
             $where[] = sprintf('role= %s ', $this->connection->quote($params['filter']['role']));

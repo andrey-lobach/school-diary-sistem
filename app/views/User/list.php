@@ -87,19 +87,35 @@ $countOfPages = $this->data['countOfPages'];
                    <button class="prev"><i class="fas fa-arrow-circle-left"></i></button>
                     <input class="number_of_pages" hidden value="<?php echo $countOfPages ?>">
                     <?php
-                    for ($i = 1; $i <= $countOfPages; $i++) { ?>
+                    for ($i = 1; $i <= $countOfPages; $i++) {
+                        if ($countOfPages>7 && $i>3 && $i<$countOfPages-2) {
+                            if ($i===4) {
+                            ?>
+                            <select class="page_select" >
+                                <option></option>
+                                <?php for($j=$i; $j<$countOfPages-2; $j++) { ?>
+                                    <option <?php if ($j===(int)$data['page']['current_page']) echo 'selected'?>><?php echo $j; ?></option><?php
+                                } } else {
+                                    continue;
+                                } ?>
+                            </select><?php }else{ ?>
                         <button type="submit" class="page <?php if ((int)$data['page']['current_page'] === $i) {
                             echo 'current_page';
                         } ?>"><?php echo $i; ?></button>
-                        <?php if ($countOfPages === 1) break;
-                    }
+                    <?php } }
                     ?>
                     <button class="next"><i class="fas fa-arrow-circle-right"></i></button>
                 </div>
-                <div>
+                <div class="per_page">
                     <label>Per page</label>
 
                     <select name="page[limit]" class="per_page_select">
+                        <option <?php if ((int)$data['page']['limit'] === 1) {
+                            echo 'selected';
+                        } ?>>1</option>
+                        <option <?php if ((int)$data['page']['limit'] === 2) {
+                                echo 'selected';
+                            } ?>>2</option>
                         <option <?php if ((int)$data['page']['limit'] === 5) {
                             echo 'selected';
                         } ?>>5

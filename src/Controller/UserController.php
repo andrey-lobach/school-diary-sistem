@@ -121,7 +121,7 @@ class UserController
         $id = $request->get('id');
         $user = $this->userModel->getUser($id);
         if (null === $user) {
-            throw new NotFoundException();
+            throw new NotFoundException('User not found');
         }
         $form = new UserForm($this->userModel, $user);
         if ($request->getMethod() === Request::POST) {
@@ -148,7 +148,7 @@ class UserController
     {
         $id = $request->get('id');
         if (!$this->userModel->getUser($id)) {
-            throw new NotFoundException();
+            throw new NotFoundException('User not found');
         }
         try {
             $this->userModel->delete($id);

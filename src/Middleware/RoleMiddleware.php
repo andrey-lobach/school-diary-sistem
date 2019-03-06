@@ -45,7 +45,7 @@ class RoleMiddleware implements MiddlewareInterface
     {
         $role = $this->securityService->getRole();
         if ($this->isAuthenticated($request->getPath(), $role) === false) {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException('Access denied');
         }
         return null;
     }

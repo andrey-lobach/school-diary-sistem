@@ -12,5 +12,4 @@ return [
     ],
     'services' => require __DIR__ . '/services.php',
 ];
-//TODO логин для учителей и админа в списке студентов класса
 //TODO code formatting(php doc!!!)

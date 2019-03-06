@@ -28,13 +28,14 @@ class Kernel
      * @param Request $request
      *
      * @return Route
+     * @throws NotFoundException
      */
     private function getRoute(Request $request): Route
     {
         require_once __DIR__.'/config/routes.php';
         $route = Router::findRoute($request);
         if ($route === null) {
-            throw new NotFoundException();
+            throw new NotFoundException('Route not found');
         }
 
         return $route;
