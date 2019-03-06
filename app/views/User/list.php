@@ -42,7 +42,6 @@ $countOfPages = $this->data['countOfPages'];
             <input class="filter_direction" name="order_dir" value="<?php echo $data['order_dir'] ?>" hidden>
             <input class="current_page" name="page[current_page]" value="<?php echo $data['page']['current_page']; ?>" hidden>
             <input class="offset" name="page[offset]" value="<?php echo $data['page']['offset']; ?>" hidden>
-            <input class="limit" name="page[limit]" value="<?php echo $data['page']['limit']; ?>" hidden>
             <button type="submit" class="submit_button">Filter</button>
         </div>
 

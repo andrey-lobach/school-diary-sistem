@@ -12,4 +12,6 @@ return [
     ],
     'services' => require __DIR__ . '/services.php',
 ];
-//TODO code formatting(php doc!!!)
+//TODO code formatting(php doc!!!) redirect url with '/' to without '/'
+//TODO style (teacher leave/join class)
+//TODO style in class list

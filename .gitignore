@@ -1,3 +1,6 @@
 .idea
 /alogs/
 /vendor/
+access.log
+composer.lock
+composer.phar

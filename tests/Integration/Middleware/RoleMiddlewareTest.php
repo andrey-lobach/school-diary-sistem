@@ -38,9 +38,10 @@ class RoleMiddlewareTest extends TestCase
      *
      * @doesNotPerformAssertions
      *
-     * @param string  $role
-     * @param Route   $route
+     * @param string $role
+     * @param Route $route
      * @param Request $request
+     * @throws \Core\HTTP\Exception\UnauthorizedException
      */
     public function testPermittedRequest(string $role, Route $route, Request $request)
     {
