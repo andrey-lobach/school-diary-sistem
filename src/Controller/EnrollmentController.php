@@ -8,6 +8,7 @@
 
 namespace Controller;
 
+use Core\HTTP\Exception\NotFoundException;
 use Core\MessageBag;
 use Core\Request\Request;
 use Core\Response\RedirectResponse;
@@ -95,6 +96,7 @@ class EnrollmentController
                     RolesEnum::STUDENT
                 );
                 $this->messageBag->addMessage('Students added');
+
                 return new RedirectResponse('/classes/'.$classId);
             }
         }
@@ -163,22 +165,22 @@ class EnrollmentController
         if (!$this->userModel->getUser($userId)) {
             throw new NotFoundException('User not found');
         }
-        if ($this->userModel->getUser($userId)['role'] === RolesEnum::TEACHER){
+        if ($this->userModel->getUser($userId)['role'] === RolesEnum::TEACHER) {
             $this->messageBag->addMessage('Teacher removed');
         } else {
             $this->messageBag->addMessage('Student removed');
         }
         if ($this->securityService->getRole() === RolesEnum::ADMIN) {
             $this->enrollmentModel->delete($userId, $classId);
+
             return new RedirectResponse('/classes/'.$classId);
         }
         if ($this->userModel->getUser($userId)['role'] === RolesEnum::TEACHER) {
-            $this->enrollmentModel->re($userId, $classId);
+            $this->enrollmentModel->isEnrollment($userId, $classId);
+
             return new RedirectResponse('/classes');
         }
 
         return new RedirectResponse('/classes/'.$classId);
     }
-
-
 }

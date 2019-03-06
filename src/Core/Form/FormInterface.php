@@ -17,7 +17,6 @@ interface FormInterface
      */
     public function handleRequest(Request $request);
 
-
     /**
      * @return array
      */

@@ -85,6 +85,11 @@ class Response
         echo $this->resource->getContent();
     }
 
+    /**
+     * @param int $code
+     *
+     * @return mixed|string
+     */
     private function getMessage(int $code)
     {
         $messages = [

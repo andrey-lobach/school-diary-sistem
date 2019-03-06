@@ -9,7 +9,6 @@
 namespace Controller;
 
 use Core\HTTP\Exception\NotFoundException;
-use Core\HTTP\Exception\RequestException;
 use Core\MessageBag;
 use Core\Template\Renderer;
 use Enum\RolesEnum;
@@ -209,7 +208,9 @@ class ClassController
         $classId = $request->get('id');
         $teacherId = $this->securityService->getUserId();
         $this->enrollmentModel->create($teacherId, $classId, RolesEnum::TEACHER);
-        $this->messageBag->addMessage(sprintf('You are joined to %s class', $this->classModel->getClass($classId)['title']));
+        $this->messageBag->addMessage(
+            sprintf('You are joined to %s class', $this->classModel->getClass($classId)['title'])
+        );
 
         return new RedirectResponse('/classes');
     }
@@ -224,7 +225,9 @@ class ClassController
         $classId = $request->get('id');
         $teacherId = $this->securityService->getUserId();
         $this->enrollmentModel->delete($teacherId, $classId);
-        $this->messageBag->addMessage(sprintf('You are leaved %s class', $this->classModel->getClass($classId)['title']));
+        $this->messageBag->addMessage(
+            sprintf('You are leaved %s class', $this->classModel->getClass($classId)['title'])
+        );
 
         return new RedirectResponse('/classes');
     }

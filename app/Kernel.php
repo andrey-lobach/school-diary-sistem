@@ -1,7 +1,6 @@
 <?php
 
 use Core\HTTP\Exception\NotFoundException;
-use Core\HTTP\Exception\RequestException;
 use Core\Request\Request;
 use Core\Response\Response;
 use Core\Router\Route;
@@ -13,12 +12,19 @@ class Kernel
 {
     private $config;
     private $connection;
+
+    /**
+     * Kernel constructor.
+     */
     public function __construct()
     {
         $this->config = require __DIR__.'/config/config.php';
         $this->container = ServiceContainer::getInstance($this->config);
     }
 
+    /**
+     * @return mixed
+     */
     public function getConnection()
     {
         return $this->connection;
@@ -41,6 +47,12 @@ class Kernel
         return $route;
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     * @throws NotFoundException
+     */
     public function createResponse(Request $request): Response
     {
         $route = $this->getRoute($request);
@@ -64,6 +76,11 @@ class Kernel
         return $this->container;
     }
 
+    /**
+     * @param Route $route
+     *
+     * @return mixed
+     */
     private function getController(Route $route)
     {
         return $this->container->get($route->getControllerClass());

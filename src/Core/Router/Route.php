@@ -31,6 +31,14 @@ class Route
      */
     private $rules;
 
+    /**
+     * Route constructor.
+     *
+     * @param string $path
+     * @param string $controllerClass
+     * @param string $method
+     * @param array  $rules
+     */
     public function __construct(string $path, string $controllerClass, string $method, array $rules = [])
     {
         $this->path = $path;
@@ -40,21 +48,37 @@ class Route
         $this->pattern = $this->createPattern($path, $this->rules);
     }
 
+    /**
+     * @return string
+     */
     public function getControllerClass(): string
     {
         return $this->controllerClass;
     }
 
+    /**
+     * @return string
+     */
     public function getMethod(): string
     {
         return $this->method;
     }
 
+    /**
+     * @param string $path
+     *
+     * @return bool
+     */
     public function match(string $path): bool
     {
         return preg_match($this->pattern, $path);
     }
 
+    /**
+     * @param string $path
+     *
+     * @return array
+     */
     public function getPathValues(string $path): array
     {
         $values = [];
@@ -66,6 +90,12 @@ class Route
         return $values;
     }
 
+    /**
+     * @param string $path
+     * @param        $rules
+     *
+     * @return string
+     */
     private function createPattern(string $path, $rules): string
     {
         if ($rules) {
@@ -86,7 +116,13 @@ class Route
         return sprintf('~^%s$~', $path);
     }
 
-    private function prepareRules(array $rules, string $path)
+    /**
+     * @param array  $rules
+     * @param string $path
+     *
+     * @return array
+     */
+    private function prepareRules(array $rules, string $path): array
     {
         $gaps = [];
         if (preg_match_all('#\{(\w+)\}#', $path, $matches)) {

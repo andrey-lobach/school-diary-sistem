@@ -10,6 +10,9 @@ namespace Core\Request;
 
 class RequestFactory
 {
+    /**
+     * @return Request
+     */
     public static function createRequest(): Request
     {
         $request = new Request(
@@ -17,23 +20,31 @@ class RequestFactory
             self::getMethod(),
             self::getRequest()
         );
+
         return $request;
     }
 
-
-    private static function getPath() :string
+    /**
+     * @return string
+     */
+    private static function getPath(): string
     {
         return $_SERVER['REQUEST_URI'];
     }
 
+    /**
+     * @return array
+     */
     private static function getRequest(): array
     {
         return $_REQUEST;
     }
 
+    /**
+     * @return string
+     */
     private static function getMethod(): string
     {
         return $_SERVER['REQUEST_METHOD'];
     }
-
 }

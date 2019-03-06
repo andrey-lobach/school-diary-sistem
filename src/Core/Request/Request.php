@@ -23,6 +23,13 @@ class Request
 
     private $request;
 
+    /**
+     * Request constructor.
+     *
+     * @param string $path
+     * @param string $method
+     * @param array  $request
+     */
     public function __construct(string $path, string $method, array $request)
     {
         $this->request=$request;

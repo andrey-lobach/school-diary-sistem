@@ -11,6 +11,12 @@ namespace Core\Response;
 
 class RedirectResponse extends Response
 {
+    /**
+     * RedirectResponse constructor.
+     *
+     * @param     $url
+     * @param int $code
+     */
     public function __construct($url, int $code = self::MOVED_TEMPORARILY)
     {
         $this->resource = new EmptyResource();
