@@ -29,7 +29,6 @@ class RoleMiddlewareTest extends TestCase
 
     public function testNotPermittedRequest(string $role, Route $route, Request $request)
     {
-        echo 'role: ', $role, ' url: ', $request->getPath(), PHP_EOL;//DELETE
         $this->handleRequest($role, $route, $request);
     }
 
@@ -45,7 +44,6 @@ class RoleMiddlewareTest extends TestCase
      */
     public function testPermittedRequest(string $role, Route $route, Request $request)
     {
-        echo 'role: ', $role, ' url: ', $request->getPath(), PHP_EOL;//DELETE
         $this->handleRequest($role, $route, $request);
     }
 
