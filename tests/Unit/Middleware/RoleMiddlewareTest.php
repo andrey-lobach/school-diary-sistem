@@ -30,7 +30,6 @@ class RoleMiddlewareTest extends TestCase
 
     public function testNotPermittedRequest(array $routeSecurity, string $role, Route $route, Request $request)
     {
-        echo 'role: ', $role, ' url: ', $request->getPath(), PHP_EOL;//DELETE
         $this->handleRequest($routeSecurity, $role, $route, $request);
     }
 
@@ -46,7 +45,6 @@ class RoleMiddlewareTest extends TestCase
      */
     public function testPermittedRequest(array $routeSecurity, string $role, Route $route, Request $request)
     {
-        echo 'role: ', $role, ' url: ', $request->getPath(), PHP_EOL;//DELETE
         $this->handleRequest($routeSecurity, $role, $route, $request);
     }
 
@@ -144,8 +142,8 @@ class RoleMiddlewareTest extends TestCase
     public function getRouteSecurity(): array
     {
         return [
-            '^/logout$'      => [RolesEnum::getAll()],
-            '^/my-profile$' => [RolesEnum::getAll()],
+            '^/logout$'      => [RolesEnum::ADMIN, RolesEnum::TEACHER, RolesEnum::STUDENT],
+            '^/my-profile$' => [RolesEnum::ADMIN, RolesEnum::TEACHER, RolesEnum::STUDENT],
             '^/users'       => [RolesEnum::ADMIN],
             '^/classes'     => [RolesEnum::TEACHER],
             '^/my-class$'   => [RolesEnum::STUDENT],
