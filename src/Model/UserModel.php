@@ -146,6 +146,10 @@ class UserModel
         return $user ?: null;
     }
 
+    /**
+     * @param int $userId
+     * @param string $plainPassword
+     */
     public function changePassword(int $userId, string $plainPassword)
     {
         $salt = $this->stringBuilder->build(5);

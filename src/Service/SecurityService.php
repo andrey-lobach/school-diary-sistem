@@ -30,6 +30,12 @@ class SecurityService
      */
     private $passwordHelper;
 
+    /**
+     * SecurityService constructor.
+     * @param Session $session
+     * @param UserModel $userModel
+     * @param PasswordHelper $passwordHelper
+     */
     public function __construct(Session $session, UserModel $userModel, PasswordHelper $passwordHelper)
     {
         $this->session = $session;
@@ -37,6 +43,9 @@ class SecurityService
         $this->passwordHelper = $passwordHelper;
     }
 
+    /**
+     * @return bool
+     */
     public function isAuthorized(): bool
     {
         return $this->session->has('user');
@@ -47,6 +56,10 @@ class SecurityService
         $this->session->remove('user');
     }
 
+    /**
+     * @param array $credentials
+     * @return bool
+     */
     public function authorize(array $credentials): bool
     {
         if (!$this->isPasswordValid($credentials['login'], $credentials['password'])) {
@@ -58,11 +71,20 @@ class SecurityService
         return true;
     }
 
+    /**
+     * @param string $login
+     * @return bool
+     */
     public function userExist(string $login): bool
     {
         return (bool) $this->userModel->findByLogin($login);
     }
 
+    /**
+     * @param string $login
+     * @param string $password
+     * @return bool
+     */
     public function isPasswordValid(string $login, string $password): bool
     {
         $user = $this->userModel->findByLogin($login);

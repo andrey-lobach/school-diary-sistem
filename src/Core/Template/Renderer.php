@@ -31,9 +31,9 @@ class Renderer
     /**
      * Renderer constructor.
      *
-     * @param string      $viewDir
+     * @param string $viewDir
      * @param MenuBuilder $menuBuilder
-     * @param MessageBag  $messageBag
+     * @param MessageBag $messageBag
      */
     public function __construct(string $viewDir, MenuBuilder $menuBuilder, MessageBag $messageBag)
     {

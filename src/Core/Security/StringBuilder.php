@@ -11,6 +11,10 @@ namespace Core\Security;
 
 class StringBuilder
 {
+    /**
+     * @param int $length
+     * @return string
+     */
     public function build(int $length): string
     {
         $string = '';

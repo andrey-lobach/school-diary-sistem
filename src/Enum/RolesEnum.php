@@ -17,6 +17,9 @@ final class RolesEnum
 
     const TEACHER = 'teacher';
 
+    /**
+     * @return array
+     */
     public static function getAll(): array
     {
         return [self::ADMIN, self::STUDENT, self::TEACHER];

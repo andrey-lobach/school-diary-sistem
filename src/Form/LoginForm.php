@@ -10,7 +10,6 @@ namespace Form;
 
 
 use Core\Request\Request;
-use Model\UserModel;
 use Service\SecurityService;
 
 class LoginForm
@@ -19,11 +18,18 @@ class LoginForm
     private $violations = [];
     private $securityService;
 
+    /**
+     * LoginForm constructor.
+     * @param SecurityService $securityService
+     */
     public function __construct(SecurityService $securityService)
     {
         $this->securityService = $securityService;
     }
 
+    /**
+     * @param Request $request
+     */
     public function handleRequest(Request $request)
     {
         $this->data['login'] = $login = $request->get('login');
@@ -57,6 +63,9 @@ class LoginForm
     }
 
 
+    /**
+     * @return bool
+     */
     public function isValid()
     {
         return count($this->violations) === 0;

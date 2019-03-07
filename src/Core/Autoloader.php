@@ -16,11 +16,18 @@ class Autoloader
      */
     private $dirs;
 
+    /**
+     * Autoloader constructor.
+     * @param array $dirs
+     */
     public function __construct(array $dirs)
     {
         $this->dirs = $dirs;
     }
 
+    /**
+     * @param string $class
+     */
     public function load(string $class)
     {
         $subPath = str_replace('\\', DIRECTORY_SEPARATOR, $class);

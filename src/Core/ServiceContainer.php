@@ -24,6 +24,10 @@ final class ServiceContainer
      */
     private $services = [];
 
+    /**
+     * @param array|null $config
+     * @return ServiceContainer
+     */
     public static function getInstance(array $config = null): self
     {
         if (!isset(self::$instance)) {
@@ -34,11 +38,19 @@ final class ServiceContainer
         return self::$instance;
     }
 
+    /**
+     * ServiceContainer constructor.
+     * @param array $config
+     */
     private function __construct(array $config)
     {
         $this->config = $config;
     }
 
+    /**
+     * @param string $key
+     * @return mixed
+     */
     public function get(string $key)
     {
         if (!array_key_exists($key, $this->services)){
@@ -47,11 +59,19 @@ final class ServiceContainer
         return $this->services[$key];
     }
 
+    /**
+     * @param string $key
+     * @return mixed
+     */
     public function getParameter(string $key)
     {
         return $this->config['parameters'][$key];
     }
 
+    /**
+     * @param string $class
+     * @return mixed
+     */
     private function createService(string $class)
     {
         $parameters = [];

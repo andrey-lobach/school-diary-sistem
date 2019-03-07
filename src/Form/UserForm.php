@@ -98,7 +98,10 @@ class UserForm
         return $this->violations;
     }
 
-    public function isValid()
+    /**
+     * @return bool
+     */
+    public function isValid():bool
     {
         return count($this->violations) === 0;
     }

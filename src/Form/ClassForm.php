@@ -17,12 +17,20 @@ class ClassForm
     private $violations = [];
     private $classModel;
 
+    /**
+     * ClassForm constructor.
+     * @param ClassModel $classModel
+     * @param array $data
+     */
     public function __construct(ClassModel $classModel, array $data = [])
     {
         $this->classModel = $classModel;
         $this->data = $data;
     }
 
+    /**
+     * @param Request $request
+     */
     public function handleRequest(Request $request)
     {
         $this->data['title'] = $request->get('title');

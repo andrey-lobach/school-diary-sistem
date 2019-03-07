@@ -83,6 +83,7 @@ class EnrollmentController
      * @param Request $request
      *
      * @return Response|RedirectResponse
+     * @throws \Exception
      */
     public function addStudent(Request $request)
     {
@@ -119,6 +120,7 @@ class EnrollmentController
      * @param Request $request
      *
      * @return Response|RedirectResponse
+     * @throws \Exception
      */
     public function addTeacher(Request $request)
     {
@@ -165,21 +167,15 @@ class EnrollmentController
         if (!$this->userModel->getUser($userId)) {
             throw new NotFoundException('User not found');
         }
+        if (!$this->classModel->getClass($classId)) {
+            throw new NotFoundException('Class not found');
+        }
         if ($this->userModel->getUser($userId)['role'] === RolesEnum::TEACHER) {
             $this->messageBag->addMessage('Teacher removed');
         } else {
             $this->messageBag->addMessage('Student removed');
         }
-        if ($this->securityService->getRole() === RolesEnum::ADMIN) {
-            $this->enrollmentModel->delete($userId, $classId);
-
-            return new RedirectResponse('/classes/'.$classId);
-        }
-        if ($this->userModel->getUser($userId)['role'] === RolesEnum::TEACHER) {
-            $this->enrollmentModel->isEnrollment($userId, $classId);
-
-            return new RedirectResponse('/classes');
-        }
+        $this->enrollmentModel->delete($userId, $classId);
 
         return new RedirectResponse('/classes/'.$classId);
     }
